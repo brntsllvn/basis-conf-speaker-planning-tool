@@ -21,7 +21,7 @@ export function GridPage() {
         type: 'solo' as SlotType,
         company: '',
         title: 'New Slot',
-        speakerIds: [],
+        assignments: [],
         isSponsored: false,
         isTbd: true,
         notes: '',

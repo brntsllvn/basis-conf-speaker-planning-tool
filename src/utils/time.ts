@@ -1,7 +1,7 @@
 import type { SlotIndex } from '../types/schedule';
 
 export const DAY_START_HOUR = 7;
-export const DAY_END_HOUR = 18;
+export const DAY_END_HOUR = 22;
 export const SLOT_MINUTES = 5;
 export const TOTAL_SLOTS = ((DAY_END_HOUR - DAY_START_HOUR) * 60) / SLOT_MINUTES; // 132
 

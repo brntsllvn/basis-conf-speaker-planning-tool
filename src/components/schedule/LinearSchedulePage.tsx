@@ -35,12 +35,11 @@ export function LinearSchedulePage() {
   }, [state]);
 
   const getSpeakerNames = (slot: TimeSlot) =>
-    slot.speakerIds
-      .map((id) => {
-        const c = state.contacts.find((ct) => ct.id === id);
+    slot.assignments
+      .map((a) => {
+        const c = state.contacts.find((ct) => ct.id === a.contactId);
         if (!c) return null;
-        const isLeader = slot.panelLeaderId === c.id;
-        return isLeader ? `${c.name} (Lead)` : c.name;
+        return `${c.name} (${a.slotRole})`;
       })
       .filter(Boolean)
       .join(', ');

@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
 import { GridPage } from './components/grid/GridPage';
 import { LinearSchedulePage } from './components/schedule/LinearSchedulePage';
-import { ContactDirectoryPage } from './components/contacts/ContactDirectoryPage';
+import { PeoplePage } from './components/people/PeoplePage';
 
 export const router = createBrowserRouter([
   {
@@ -12,7 +12,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to="/grid" replace /> },
       { path: 'grid', element: <GridPage /> },
       { path: 'schedule', element: <LinearSchedulePage /> },
-      { path: 'contacts', element: <ContactDirectoryPage /> },
+      { path: 'people', element: <PeoplePage /> },
     ],
   },
 ]);

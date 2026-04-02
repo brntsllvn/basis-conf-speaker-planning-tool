@@ -101,8 +101,7 @@ export function scheduleReducer(state: AppState, action: Action): AppState {
         contacts: state.contacts.filter((c) => c.id !== contactId),
         slots: state.slots.map((s) => ({
           ...s,
-          speakerIds: s.speakerIds.filter((id) => id !== contactId),
-          panelLeaderId: s.panelLeaderId === contactId ? undefined : s.panelLeaderId,
+          assignments: s.assignments.filter((a) => a.contactId !== contactId),
         })),
       };
     }

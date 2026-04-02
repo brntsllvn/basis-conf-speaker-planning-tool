@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { TimeSlot, SlotType, ContactRole } from '../../types/schedule';
+import type { TimeSlot, SlotType, SlotRole, SlotAssignment } from '../../types/schedule';
 import { useSchedule } from '../../state/ScheduleContext';
 import { slotToTime, slotsToDuration } from '../../utils/time';
 
@@ -7,7 +7,7 @@ const SLOT_TYPES: SlotType[] = [
   'keynote', 'solo', 'panel', 'break', 'event', 'emcee', 'open', 'load-in', 'not-in-use',
 ];
 
-const ROLES: ContactRole[] = ['speaker', 'panelist', 'emcee', 'support-staff'];
+const SLOT_ROLES: SlotRole[] = ['Speaker', 'Moderator'];
 
 interface Props {
   slot: TimeSlot;
@@ -22,16 +22,7 @@ export function SlotEditor({ slot, onClose }: Props) {
   const [notes, setNotes] = useState(slot.notes);
   const [isSponsored, setIsSponsored] = useState(slot.isSponsored);
   const [isTbd, setIsTbd] = useState(slot.isTbd);
-  const [selectedSpeakers, setSelectedSpeakers] = useState<string[]>(slot.speakerIds);
-  const [panelLeader, setPanelLeader] = useState(slot.panelLeaderId ?? '');
-
-  // New contact form
-  const [showAddContact, setShowAddContact] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newEmail, setNewEmail] = useState('');
-  const [newPhone, setNewPhone] = useState('');
-  const [newRole, setNewRole] = useState<ContactRole>('speaker');
-  const [newNotes, setNewNotes] = useState('');
+  const [assignments, setAssignments] = useState<SlotAssignment[]>(slot.assignments);
 
   useEffect(() => {
     setCompany(slot.company);
@@ -40,24 +31,14 @@ export function SlotEditor({ slot, onClose }: Props) {
     setNotes(slot.notes);
     setIsSponsored(slot.isSponsored);
     setIsTbd(slot.isTbd);
-    setSelectedSpeakers(slot.speakerIds);
-    setPanelLeader(slot.panelLeaderId ?? '');
+    setAssignments(slot.assignments);
   }, [slot]);
 
   const save = () => {
     dispatch({
       type: 'UPDATE_SLOT',
       slotId: slot.id,
-      changes: {
-        company,
-        title,
-        type,
-        notes,
-        isSponsored,
-        isTbd,
-        speakerIds: selectedSpeakers,
-        panelLeaderId: panelLeader || undefined,
-      },
+      changes: { company, title, type, notes, isSponsored, isTbd, assignments },
     });
     onClose();
   };
@@ -69,41 +50,26 @@ export function SlotEditor({ slot, onClose }: Props) {
     }
   };
 
-  const toggleSpeaker = (id: string) => {
-    setSelectedSpeakers((prev) =>
-      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
-    );
+  const addAssignment = (contactId: string) => {
+    if (assignments.some((a) => a.contactId === contactId)) return;
+    setAssignments([...assignments, { contactId, slotRole: 'Speaker' }]);
   };
 
-  const handleAddContact = () => {
-    if (!newName.trim()) return;
-    const id = crypto.randomUUID();
-    dispatch({
-      type: 'ADD_CONTACT',
-      contact: {
-        id,
-        name: newName.trim(),
-        email: newEmail.trim(),
-        phone: newPhone.trim(),
-        role: newRole,
-        notes: newNotes.trim(),
-      },
-    });
-    setSelectedSpeakers((prev) => [...prev, id]);
-    setNewName('');
-    setNewEmail('');
-    setNewPhone('');
-    setNewRole('speaker');
-    setNewNotes('');
-    setShowAddContact(false);
+  const removeAssignment = (contactId: string) => {
+    setAssignments(assignments.filter((a) => a.contactId !== contactId));
   };
 
-  const allContacts = state.contacts;
+  const updateRole = (contactId: string, slotRole: SlotRole) => {
+    setAssignments(assignments.map((a) => a.contactId === contactId ? { ...a, slotRole } : a));
+  };
 
   const startTime = slotToTime(slot.startSlot);
   const endTime = slotToTime(slot.startSlot + slot.durationSlots);
   const duration = slotsToDuration(slot.durationSlots);
   const venue = state.venues.find((v) => v.id === slot.venueId);
+
+  const assignedIds = new Set(assignments.map((a) => a.contactId));
+  const unassigned = state.contacts.filter((c) => !assignedIds.has(c.id));
 
   return (
     <div className="slot-editor-overlay" onClick={onClose}>
@@ -130,9 +96,7 @@ export function SlotEditor({ slot, onClose }: Props) {
         <div className="editor-field">
           <label>Type</label>
           <select value={type} onChange={(e) => setType(e.target.value as SlotType)}>
-            {SLOT_TYPES.map((t) => (
-              <option key={t} value={t}>{t}</option>
-            ))}
+            {SLOT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
         </div>
 
@@ -153,75 +117,53 @@ export function SlotEditor({ slot, onClose }: Props) {
         </div>
 
         <div className="editor-field">
-          <label>People</label>
-          {allContacts.length > 0 && (
-            <div className="speaker-list">
-              {allContacts.map((c) => (
-                <label key={c.id} className="speaker-option">
-                  <input
-                    type="checkbox"
-                    checked={selectedSpeakers.includes(c.id)}
-                    onChange={() => toggleSpeaker(c.id)}
-                  />
-                  {c.name} <span className="speaker-role">({c.role})</span>
-                </label>
-              ))}
+          <label>People &amp; Roles</label>
+          {assignments.length > 0 && (
+            <div className="assignment-list">
+              {assignments.map((a) => {
+                const c = state.contacts.find((ct) => ct.id === a.contactId);
+                if (!c) return null;
+                return (
+                  <div key={a.contactId} className="assignment-row">
+                    <span className="assignment-name">{c.name}</span>
+                    {c.company && <span className="assignment-co">{c.company}</span>}
+                    <select
+                      className="assignment-role-select"
+                      value={a.slotRole}
+                      onChange={(e) => updateRole(a.contactId, e.target.value as SlotRole)}
+                    >
+                      {SLOT_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+                    </select>
+                    <button className="btn btn-sm btn-danger" onClick={() => removeAssignment(a.contactId)}>x</button>
+                  </div>
+                );
+              })}
             </div>
           )}
-          <button
-            className="btn btn-sm"
-            style={{ marginTop: 6 }}
-            onClick={() => setShowAddContact(!showAddContact)}
-          >
-            + New Contact
-          </button>
-        </div>
 
-        {showAddContact && (
-          <div className="add-contact-inline">
-            <div className="editor-field">
-              <label>Name *</label>
-              <input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Full name" />
-            </div>
-            <div className="editor-field">
-              <label>Email</label>
-              <input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="email@example.com" />
-            </div>
-            <div className="editor-field">
-              <label>Phone</label>
-              <input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="555-0123" />
-            </div>
-            <div className="editor-field">
-              <label>Role</label>
-              <select value={newRole} onChange={(e) => setNewRole(e.target.value as ContactRole)}>
-                {ROLES.map((r) => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
+          {unassigned.length > 0 && (
+            <div className="assignment-add">
+              <select
+                defaultValue=""
+                onChange={(e) => {
+                  if (e.target.value) addAssignment(e.target.value);
+                  e.target.value = '';
+                }}
+              >
+                <option value="" disabled>+ Add person...</option>
+                {unassigned
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}{c.company ? ` (${c.company})` : ''}
+                    </option>
+                  ))}
               </select>
             </div>
-            <div className="editor-field">
-              <label>Notes</label>
-              <input value={newNotes} onChange={(e) => setNewNotes(e.target.value)} placeholder="Optional" />
-            </div>
-            <div style={{ display: 'flex', gap: 6 }}>
-              <button className="btn btn-primary btn-sm" onClick={handleAddContact}>Add & Assign</button>
-              <button className="btn btn-sm" onClick={() => setShowAddContact(false)}>Cancel</button>
-            </div>
-          </div>
-        )}
+          )}
 
-        {(type === 'panel') && selectedSpeakers.length > 0 && (
-          <div className="editor-field">
-            <label>Panel Leader</label>
-            <select value={panelLeader} onChange={(e) => setPanelLeader(e.target.value)}>
-              <option value="">None</option>
-              {selectedSpeakers.map((id) => {
-                const c = state.contacts.find((ct) => ct.id === id);
-                return c ? <option key={id} value={id}>{c.name}</option> : null;
-              })}
-            </select>
-          </div>
-        )}
+          <p className="editor-hint">Manage people on the People tab.</p>
+        </div>
 
         <div className="editor-actions">
           <button className="btn btn-primary" onClick={save}>Save</button>

@@ -15,7 +15,12 @@ export type SlotType =
   | 'load-in'
   | 'not-in-use';
 
-export type ContactRole = 'speaker' | 'panelist' | 'emcee' | 'support-staff';
+export type SlotRole = 'Speaker' | 'Moderator';
+
+export interface SlotAssignment {
+  contactId: string;
+  slotRole: SlotRole;
+}
 
 export interface TimeSlot {
   id: string;
@@ -26,8 +31,7 @@ export interface TimeSlot {
   type: SlotType;
   company: string;
   title: string;
-  speakerIds: string[];
-  panelLeaderId?: string;
+  assignments: SlotAssignment[];
   isSponsored: boolean;
   isTbd: boolean;
   notes: string;
@@ -37,9 +41,13 @@ export interface TimeSlot {
 export interface Contact {
   id: string;
   name: string;
+  company: string;
+  title: string;
   email: string;
   phone: string;
-  role: ContactRole;
+  supportName: string;
+  supportEmail: string;
+  supportPhone: string;
   notes: string;
 }
 

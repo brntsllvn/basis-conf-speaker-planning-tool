@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useSchedule } from '../../state/ScheduleContext';
-import { downloadJson, importFromJson } from '../../state/persistence';
+import { downloadJson, importFromJson, resetToSeed } from '../../state/persistence';
 import { useRef } from 'react';
 
 export function Nav() {
@@ -33,8 +33,8 @@ export function Nav() {
         <NavLink to="/schedule" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           Schedule
         </NavLink>
-        <NavLink to="/contacts" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-          Contacts
+        <NavLink to="/people" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          People
         </NavLink>
       </div>
       <div className="nav-actions">
@@ -43,6 +43,18 @@ export function Nav() {
         </button>
         <button className="nav-btn" onClick={() => fileInputRef.current?.click()} title="Import JSON">
           Import
+        </button>
+        <button
+          className="nav-btn"
+          onClick={() => {
+            if (confirm('Reset all data to the original seed? This cannot be undone.')) {
+              const fresh = resetToSeed();
+              dispatch({ type: 'IMPORT_STATE', state: fresh });
+            }
+          }}
+          title="Reset to seed data"
+        >
+          Reset
         </button>
         <input
           ref={fileInputRef}

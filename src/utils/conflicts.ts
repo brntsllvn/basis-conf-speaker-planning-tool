@@ -12,7 +12,7 @@ export function detectConflicts(slots: TimeSlot[]): Conflict[] {
   const byDay = new Map<DayId, TimeSlot[]>();
 
   for (const slot of slots) {
-    if (slot.speakerIds.length === 0) continue;
+    if (slot.assignments.length === 0) continue;
     const arr = byDay.get(slot.dayId) ?? [];
     arr.push(slot);
     byDay.set(slot.dayId, arr);
@@ -21,10 +21,10 @@ export function detectConflicts(slots: TimeSlot[]): Conflict[] {
   for (const [dayId, daySlots] of byDay) {
     const speakerSlots = new Map<string, TimeSlot[]>();
     for (const slot of daySlots) {
-      for (const sid of slot.speakerIds) {
-        const arr = speakerSlots.get(sid) ?? [];
+      for (const a of slot.assignments) {
+        const arr = speakerSlots.get(a.contactId) ?? [];
         arr.push(slot);
-        speakerSlots.set(sid, arr);
+        speakerSlots.set(a.contactId, arr);
       }
     }
 

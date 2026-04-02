@@ -19,17 +19,19 @@ export function SlotContent({ slot, hasConflict }: Props) {
   const startTime = slotToTime(slot.startSlot);
   const endTime = slotToTime(slot.startSlot + slot.durationSlots);
 
-  const speakers = slot.speakerIds
-    .map((id) => state.contacts.find((c) => c.id === id))
-    .filter(Boolean)
-    .map((c) => c!.name);
+  const people = slot.assignments
+    .map((a) => {
+      const c = state.contacts.find((ct) => ct.id === a.contactId);
+      return c ? { name: c.name, role: a.slotRole } : null;
+    })
+    .filter(Boolean) as { name: string; role: string }[];
 
-  // Build compact label: Company - Person - Title
+  // Build compact label: Company - Person(s) - Title
   const parts: string[] = [];
   if (slot.company) parts.push(slot.company);
-  if (speakers.length > 0) parts.push(speakers.join(', '));
-  parts.push(slot.title);
-  const label = parts.join(' — ');
+  if (people.length > 0) parts.push(people.map((p) => p.name).join(', '));
+  if (slot.title) parts.push(slot.title);
+  const label = parts.join(' \u2014 ');
 
   return (
     <div
@@ -43,23 +45,20 @@ export function SlotContent({ slot, hasConflict }: Props) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="slot-label">{label}</div>
+      <div className="slot-label">{label || 'Untitled'}</div>
 
       {hovered && (
         <div className="slot-tooltip" onClick={(e) => e.stopPropagation()}>
-          <div className="tooltip-row"><strong>{slot.title}</strong></div>
+          <div className="tooltip-row"><strong>{slot.title || 'Untitled'}</strong></div>
           {slot.company && <div className="tooltip-row">{slot.company}</div>}
           <div className="tooltip-row">{startTime} – {endTime} ({duration}m)</div>
-          <div className="tooltip-row tooltip-type">{slot.type}{slot.isTbd ? ' · TBD' : ''}{slot.isSponsored ? ' · Sponsored' : ''}</div>
-          {speakers.length > 0 && (
-            <div className="tooltip-row">
-              {speakers.map((name, i) => (
-                <span key={i}>
-                  {name}
-                  {slot.panelLeaderId && state.contacts.find(c => c.id === slot.panelLeaderId)?.name === name
-                    ? ' (Lead)' : ''}
-                  {i < speakers.length - 1 ? ', ' : ''}
-                </span>
+          <div className="tooltip-row tooltip-type">{slot.type}{slot.isTbd ? ' \u00b7 TBD' : ''}{slot.isSponsored ? ' \u00b7 Sponsored' : ''}</div>
+          {people.length > 0 && (
+            <div className="tooltip-people">
+              {people.map((p, i) => (
+                <div key={i} className="tooltip-person">
+                  {p.name} <span className="tooltip-role">{p.role}</span>
+                </div>
               ))}
             </div>
           )}

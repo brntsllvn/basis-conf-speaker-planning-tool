@@ -1,8 +1,8 @@
-import { createContext, useContext, useReducer, useEffect, useRef, type ReactNode } from 'react';
+import { createContext, useContext, useReducer, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { AppState, DayId } from '../types/schedule';
 import { scheduleReducer, type Action } from './reducer';
 import { loadState, saveState } from './persistence';
-import { useState } from 'react';
+import { createInitialState } from '../seed/initialSchedule';
 
 interface ScheduleContextValue {
   state: AppState;
@@ -14,11 +14,22 @@ interface ScheduleContextValue {
 const ScheduleContext = createContext<ScheduleContextValue | null>(null);
 
 export function ScheduleProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(scheduleReducer, undefined, () => loadState());
+  const [state, dispatch] = useReducer(scheduleReducer, undefined, () => createInitialState());
   const [activeDay, setActiveDay] = useState<DayId>('thu');
+  const [loaded, setLoaded] = useState(false);
   const saveTimeoutRef = useRef<number | undefined>(undefined);
 
+  // Load from server on mount
   useEffect(() => {
+    loadState().then((serverState) => {
+      dispatch({ type: 'IMPORT_STATE', state: serverState });
+      setLoaded(true);
+    });
+  }, []);
+
+  // Save to server on every change (debounced), but only after initial load
+  useEffect(() => {
+    if (!loaded) return;
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
@@ -28,7 +39,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     };
-  }, [state]);
+  }, [state, loaded]);
 
   return (
     <ScheduleContext.Provider value={{ state, dispatch, activeDay, setActiveDay }}>

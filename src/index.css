@@ -302,6 +302,22 @@ body {
   font-size: 11px;
 }
 
+.tooltip-people {
+  margin-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 4px;
+}
+
+.tooltip-person {
+  padding: 1px 0;
+}
+
+.tooltip-role {
+  font-size: 10px;
+  opacity: 0.6;
+  font-style: italic;
+}
+
 .tooltip-notes {
   font-style: italic;
   opacity: 0.7;
@@ -734,14 +750,176 @@ body {
 }
 .empty-state-box p { margin: 4px 0; }
 
-/* ===== Inline Add Contact (in slot editor) ===== */
-.add-contact-inline {
-  background: #f9fafb;
+/* ===== Assignment List (Slot Editor) ===== */
+.assignment-list {
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 10px;
-  margin-top: 8px;
-  margin-bottom: 12px;
+  padding: 6px;
+  margin-bottom: 6px;
+}
+
+.assignment-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: 13px;
+}
+.assignment-row + .assignment-row {
+  border-top: 1px solid #f3f4f6;
+}
+
+.assignment-name { font-weight: 500; flex-shrink: 0; }
+.assignment-co { font-size: 11px; color: var(--text-muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.assignment-role-select {
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.assignment-add {
+  margin-top: 4px;
+}
+.assignment-add select {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ===== Slot Editor Extras ===== */
+.editor-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0 0 6px;
+}
+
+.speaker-option-name { font-weight: 500; }
+.speaker-option-co { font-size: 11px; color: var(--text-muted); margin-left: 4px; }
+
+.role-badge-sm {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 600;
+  margin-left: 4px;
+}
+.role-badge-sm.role-speaker { background: #DBEAFE; color: #1E40AF; }
+.role-badge-sm.role-panelist { background: #EDE9FE; color: #5B21B6; }
+.role-badge-sm.role-emcee { background: #D1FAE5; color: #065F46; }
+.role-badge-sm.role-support-staff { background: #FEF3C7; color: #92400E; }
+
+/* ===== People Page ===== */
+.people-page {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.people-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.people-toolbar h2 { margin: 0; font-size: 20px; }
+.people-subtitle { margin: 2px 0 0; font-size: 13px; color: var(--text-muted); }
+
+.people-filters {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.people-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.people-table th {
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 2px solid var(--border);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.people-table td {
+  padding: 6px;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+  font-size: 12px;
+}
+
+.person-name { font-weight: 500; }
+.support-cell { font-size: 11px; color: var(--text-muted); }
+.notes-cell { font-size: 11px; color: var(--text-muted); font-style: italic; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sessions-cell { font-size: 12px; }
+.sessions-cell .assigned-slots-list li { padding: 3px 0; }
+.session-title-inline { font-weight: 500; }
+.session-detail-inline { font-size: 10px; color: var(--text-muted); }
+.actions-cell { white-space: nowrap; }
+.actions-cell .btn { margin-right: 4px; }
+
+/* Person Form */
+.person-form {
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.person-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.pf-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+}
+.pf-field input,
+.pf-field select {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-size: 13px;
+  font-family: var(--sans);
+}
+
+.pf-field-wide { grid-column: 1 / -1; }
+
+.pf-divider {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.pf-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 /* ===== Print ===== */
