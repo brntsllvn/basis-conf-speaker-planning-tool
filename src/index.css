@@ -10,7 +10,6 @@
   --primary-hover: #4338CA;
   --danger: #EF4444;
   --danger-hover: #DC2626;
-  --row-height: 10px;
 
   font: 14px/1.5 var(--sans);
   color: var(--text);
@@ -476,24 +475,10 @@ body {
   cursor: pointer;
 }
 
-.speaker-list {
-  max-height: 150px;
-  overflow-y: auto;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px;
-}
-.speaker-option {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 0;
-  font-size: 13px;
-  cursor: pointer;
-}
-.speaker-role {
+.editor-hint {
   font-size: 11px;
   color: var(--text-muted);
+  margin: 0 0 6px;
 }
 
 .editor-actions {
@@ -502,6 +487,48 @@ body {
   margin-top: 20px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
+}
+
+/* ===== Assignment List (Slot Editor) ===== */
+.assignment-list {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px;
+  margin-bottom: 6px;
+}
+
+.assignment-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: 13px;
+}
+.assignment-row + .assignment-row {
+  border-top: 1px solid #f3f4f6;
+}
+
+.assignment-name { font-weight: 500; flex-shrink: 0; }
+.assignment-co { font-size: 11px; color: var(--text-muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.assignment-role-select {
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.assignment-add {
+  margin-top: 4px;
+}
+.assignment-add select {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 /* ===== Linear Schedule ===== */
@@ -564,6 +591,7 @@ body {
 
 .schedule-time { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .schedule-duration { white-space: nowrap; color: var(--text-muted); }
+.schedule-company { color: var(--text-muted); }
 .schedule-title { font-weight: 500; }
 .schedule-type { text-transform: capitalize; color: var(--text-muted); font-size: 12px; }
 .schedule-speakers { color: var(--text-muted); }
@@ -594,227 +622,6 @@ body {
   text-align: center;
 }
 
-/* ===== Contacts ===== */
-.contacts-page {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.contacts-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.contacts-toolbar h2 { margin: 0; font-size: 20px; }
-
-.contacts-filters {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.search-input, .role-filter {
-  padding: 6px 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 13px;
-}
-.search-input { width: 200px; }
-
-.add-contact-form {
-  background: #f9fafb;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 16px;
-}
-.form-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.form-row input, .form-row select {
-  padding: 6px 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 13px;
-}
-
-.contacts-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-.contacts-table th {
-  text-align: left;
-  padding: 8px;
-  border-bottom: 2px solid var(--border);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-}
-.contacts-table td {
-  padding: 8px;
-  border-bottom: 1px solid #f3f4f6;
-  vertical-align: middle;
-}
-.contacts-table input,
-.contacts-table select {
-  padding: 4px 8px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 13px;
-  width: 100%;
-}
-
-.contact-name { font-weight: 500; }
-
-.role-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.role-speaker { background: #DBEAFE; color: #1E40AF; }
-.role-panelist { background: #EDE9FE; color: #5B21B6; }
-.role-emcee { background: #D1FAE5; color: #065F46; }
-.role-support-staff { background: #FEF3C7; color: #92400E; }
-
-.editing-row td {
-  background: #f9fafb;
-}
-
-.empty-state {
-  text-align: center;
-  color: var(--text-muted);
-  padding: 32px !important;
-  font-style: italic;
-}
-
-/* ===== Contact Directory (read-only) ===== */
-.contacts-subtitle {
-  margin: 2px 0 0;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.contact-role-section {
-  margin-bottom: 24px;
-}
-.contact-role-heading {
-  font-size: 16px;
-  margin: 0 0 8px;
-  color: var(--text);
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 4px;
-}
-
-.assigned-slots-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-.assigned-slots-list li {
-  padding: 1px 0;
-}
-
-.leader-badge {
-  display: inline-block;
-  font-size: 10px;
-  padding: 0 4px;
-  background: #EDE9FE;
-  color: #5B21B6;
-  border-radius: 3px;
-  margin-left: 4px;
-  font-weight: 600;
-}
-
-.text-muted { color: var(--text-muted); }
-
-.empty-state-box {
-  text-align: center;
-  padding: 48px 24px;
-  color: var(--text-muted);
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px dashed var(--border);
-}
-.empty-state-box p { margin: 4px 0; }
-
-/* ===== Assignment List (Slot Editor) ===== */
-.assignment-list {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px;
-  margin-bottom: 6px;
-}
-
-.assignment-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 0;
-  font-size: 13px;
-}
-.assignment-row + .assignment-row {
-  border-top: 1px solid #f3f4f6;
-}
-
-.assignment-name { font-weight: 500; flex-shrink: 0; }
-.assignment-co { font-size: 11px; color: var(--text-muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-.assignment-role-select {
-  padding: 2px 6px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
-.assignment-add {
-  margin-top: 4px;
-}
-.assignment-add select {
-  width: 100%;
-  padding: 5px 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-/* ===== Slot Editor Extras ===== */
-.editor-hint {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin: 0 0 6px;
-}
-
-.speaker-option-name { font-weight: 500; }
-.speaker-option-co { font-size: 11px; color: var(--text-muted); margin-left: 4px; }
-
-.role-badge-sm {
-  display: inline-block;
-  padding: 1px 5px;
-  border-radius: 8px;
-  font-size: 9px;
-  font-weight: 600;
-  margin-left: 4px;
-}
-.role-badge-sm.role-speaker { background: #DBEAFE; color: #1E40AF; }
-.role-badge-sm.role-panelist { background: #EDE9FE; color: #5B21B6; }
-.role-badge-sm.role-emcee { background: #D1FAE5; color: #065F46; }
-.role-badge-sm.role-support-staff { background: #FEF3C7; color: #92400E; }
-
 /* ===== People Page ===== */
 .people-page {
   padding: 24px;
@@ -837,6 +644,14 @@ body {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+.search-input {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  width: 200px;
 }
 
 .people-table {
@@ -870,6 +685,37 @@ body {
 .session-detail-inline { font-size: 10px; color: var(--text-muted); }
 .actions-cell { white-space: nowrap; }
 .actions-cell .btn { margin-right: 4px; }
+
+.assigned-slots-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.assigned-slots-list li {
+  padding: 1px 0;
+}
+
+.leader-badge {
+  display: inline-block;
+  font-size: 10px;
+  padding: 0 4px;
+  background: #EDE9FE;
+  color: #5B21B6;
+  border-radius: 3px;
+  margin-left: 4px;
+  font-weight: 600;
+}
+
+.text-muted { color: var(--text-muted); }
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 32px !important;
+  font-style: italic;
+}
 
 /* Person Form */
 .person-form {
