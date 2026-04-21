@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basis Northwest 2026 · Preliminary Agenda</title>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bark:      #16090A;
+      --cedar:     #3D1F10;
+      --pine:      #1B2E1A;
+      --moss:      #2E4823;
+      --fern:      #4A6637;
+      --fog:       #9A8E7D;
+      --parchment: #EAE0CB;
+      --warm:      #F5EDD8;
+      --tan:       #C49A5A;
+      --tan-light: #D9C89A;
+      --tan-rule:  #C8B880;
+      --text:      #1A0E08;
+      --muted:     #7A6A55;
+      --placeholder: #A0907A;
+    }
+
+    @page { size: legal portrait; margin: 0; }
+
+    html, body {
+      width: 8.5in;
+      margin: 0 auto;
+      background: var(--parchment);
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--text);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ── HEADER ─────────────────────────── */
+    .hdr {
+      background: var(--bark);
+      padding: 14px 30px 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+    .hdr-name {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--warm);
+      line-height: 1;
+    }
+    .hdr-sub {
+      font-size: 7.5px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--tan);
+      margin-top: 5px;
+    }
+    .hdr-meta { text-align: right; }
+    .hdr-prelim {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--tan);
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+    .hdr-version {
+      font-size: 7.5px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-top: 5px;
+    }
+    .hdr-dates {
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fog);
+      margin-top: 3px;
+    }
+
+    .rule {
+      height: 3px;
+      background: linear-gradient(90deg, var(--moss) 0%, var(--fern) 45%, var(--tan) 100%);
+    }
+
+    /* ── OUTER GRID ──────────────────────── */
+    .days {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .cell {
+      padding: 9px 18px;
+      border-right: 1px solid var(--tan-light);
+      border-bottom: 1px solid var(--tan-light);
+    }
+    .cell:nth-child(even) { border-right: none; }
+    .cell.full-width {
+      grid-column: 1 / -1;
+      border-right: none;
+    }
+    .cell.no-bottom { border-bottom: none; }
+
+    /* evening cells need full height for the flex stretch */
+    .cell.eve-cell {
+      display: flex;
+      flex-direction: column;
+      border-bottom: none;
+      padding-bottom: 10px;
+    }
+
+    /* ── WEDNESDAY BAND ──────────────────── */
+    .wed-band {
+      background: var(--cedar);
+      border-radius: 4px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .wed-left { display: flex; flex-direction: column; gap: 2px; }
+    .wed-eyebrow {
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--tan);
+    }
+    .wed-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--warm);
+    }
+    .wed-right { text-align: right; }
+    .wed-host {
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+    }
+    .wed-loc {
+      font-size: 7.5px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 2px;
+    }
+
+    /* ── DAY HEADING ─────────────────────── */
+    .day-head { padding-bottom: 6px; border-bottom: 2px solid var(--pine); }
+    .day-label {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--pine);
+    }
+    .day-date {
+      font-size: 7.5px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── SECTION LABEL ───────────────────── */
+    .sec-label {
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--moss);
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--tan-rule);
+      margin-bottom: 3px;
+    }
+
+    /* ── SESSION ROWS ────────────────────── */
+    .rows { display: flex; flex-direction: column; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      padding: 5px 0;
+      min-height: 40px;
+      align-items: center;
+      border-bottom: 1px solid #DDD3BB;
+    }
+    .row:last-child { border-bottom: none; }
+
+    .row-left { display: flex; flex-direction: column; gap: 2px; }
+
+    /* Title is the primary element — same treatment as bcard-title */
+    .row-title {
+      font-size: 8px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .row-title.tbd {
+      color: var(--placeholder);
+      font-weight: 400;
+    }
+
+    /* Company is a small secondary label below the title */
+    .row-company {
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+    .row-company.canvas-co { color: var(--moss); }
+
+    .row-speakers {
+      font-size: 7.5px;
+      font-weight: 400;
+      color: var(--muted);
+      text-align: right;
+      white-space: nowrap;
+      align-self: center;
+    }
+    .row-speakers.tbd {
+      color: var(--placeholder);
+    }
+
+    /* ── BREAKOUT BLOCK ──────────────────── */
+    .breakout-block {
+      background: var(--pine);
+      border-radius: 5px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .breakout-hdr {
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--tan);
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 1px;
+    }
+    .room-headers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .room-lbl {
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+    }
+    .bslot {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      align-items: stretch;
+    }
+    .bslot + .bslot {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 5px;
+    }
+    .bcard {
+      background: rgba(255,255,255,0.07);
+      border-radius: 3px;
+      border-left: 2px solid var(--tan);
+      padding: 5px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-height: 42px;
+    }
+    .bcard.tbd-card {
+      background: rgba(255,255,255,0.03);
+      border-left-color: rgba(255,255,255,0.12);
+    }
+    .bcard-title {
+      font-size: 8px;
+      font-weight: 600;
+      color: var(--warm);
+      line-height: 1.3;
+    }
+    .bcard-title.tbd {
+      color: rgba(255,255,255,0.4);
+      font-weight: 400;
+    }
+    .bcard-speakers {
+      font-size: 7px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.4;
+      margin-top: 1px;
+    }
+
+    /* ── EVENING ─────────────────────────── */
+    .eve-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+    }
+    .eve-block {
+      background: var(--cedar);
+      border-radius: 5px;
+      padding: 8px 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .eve-label {
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--tan);
+      margin-bottom: 3px;
+    }
+    .eve-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--warm);
+      line-height: 1.25;
+    }
+    .eve-sub {
+      font-size: 7.5px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 3px;
+    }
+
+    /* ── FOOTER ──────────────────────────── */
+    .footer {
+      background: var(--bark);
+      padding: 7px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-left {
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+    }
+    .footer-left strong { color: var(--tan); font-weight: 600; }
+    .footer-right {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 9px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ── EXPORT BUTTON ───────────────────── */
+    .export-bar {
+      width: 8.5in;
+      margin: 0 auto;
+      padding: 12px 0;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .export-btn {
+      background: var(--pine);
+      color: var(--warm);
+      border: none;
+      border-radius: 4px;
+      padding: 8px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .export-btn:hover { background: var(--moss); }
+    .export-btn:disabled { opacity: 0.5; cursor: wait; }
+
+    @media print {
+      .export-bar { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+
+// placeholder: true  = title not confirmed; shown in muted color
+// speakers: null     = shown as TBD
+
+const DAYS = [
+  {
+    label: 'Day One',
+    date: 'Thursday · May 28, 2026',
+    morning: [
+      { company: 'Canvas', title: 'Taxable Wealth: From Core Strategies to Cutting Edge Solutions', speakers: 'Chris Loveless · Ehren Stanhope', canvas: true },
+      { company: 'Research Affiliates', title: 'Index Solutions for Tax Alpha Portfolios', speakers: 'Rob Arnott' },
+      { company: 'Alpha Architect', title: 'What is a Syndic?', speakers: 'Ryan Kirlin' },
+      { company: 'First Trust · Vest', title: 'Derivatives Evolution in Tax-Aware Portfolios', speakers: 'Jeff Chang · Jon DiGiovanni' },
+    ],
+    breakouts: [
+      {
+        lla: { title: 'Partnership Solutions', speakers: 'Morgan Stanley' },
+        llb: { title: 'Qualified Opportunity Zone Panel', speakers: 'Terry Cook · Nick Rosenthal · Robert Dupree · Jim Dubeck' },
+      },
+      {
+        lla: { title: '351 Exchange Panel', speakers: 'John West · Meb Faber · Ryan Kirlin · Rafael Zayas' },
+        llb: { title: 'Tax-Aware Private Real Estate' },
+      },
+    ],
+    afternoon: [
+      { company: 'f/m Investments', placeholder: true, speakers: 'Alex Morris' },
+      { company: 'Tax Foundation', title: 'Policy & Tax Alpha', speakers: 'Daniel Bunn' },
+      { company: 'AQR Capital Management', title: 'The Tax Benefits of Pre-Tax Alpha', speakers: 'Joseph Liberman' },
+      { company: 'AQR · Fort Point Capital Partners', placeholder: true, speakers: 'Ralph Drybrough · Roy Haya' },
+      { company: 'Nuveen · Brooklyn Investment Group', title: 'Building Tax-Smart Portfolios: From Asset Allocation and Private Markets to Long/Short SMAs', speakers: 'Erkko Etula · Katrina DiFiglia · Jill Jensen' },
+      { company: 'Alliance Bernstein', placeholder: true },
+    ],
+    evening: [
+      { label: 'Evening Soiree', title: 'Hosted by First Trust', sub: 'Seattle, Washington' },
+      { label: 'Dinner', title: 'Nuveen · Brooklyn', sub: 'Offsite · By invitation' },
+    ],
+  },
+  {
+    label: 'Day Two',
+    date: 'Friday · May 29, 2026',
+    morning: [
+      { company: 'Basis Northwest', title: 'Speaker Salon', speakers: 'Brent Sullivan' },
+      { company: 'Canvas', title: 'AMA: Canvas, Coffee & Everything Taxable Wealth', speakers: 'Joe Giroux', canvas: true },
+      { company: 'Dimensional Fund Advisors', title: 'Long-Only & Long-Short SMAs', speakers: 'Savina Rizova' },
+      { company: 'Brooklyn Fi · DFA · Simplify', placeholder: true, speakers: 'AJ Ayers · Savina Rizova · Paisley Nardini' },
+      { company: 'First Trust', title: "It's Not What You Make, But What You Can Spend: Tax-Efficient Real Estate Investing", speakers: 'Christian Lena' },
+    ],
+    breakouts: [
+      {
+        lla: { title: 'Single Stock Concentration Panel', speakers: 'Shang Chou · Mike Allison · Mohsen Ghazi' },
+        llb: null,
+      },
+      {
+        lla: { title: 'Tax-Efficient Fixed Income. Yes.', speakers: 'Dave Nadig · Eric Golden' },
+        llb: { title: 'Private Placement Life Insurance Panel', speakers: 'Dave Reynolds · Travis Burke · Mohsen Ghazi · Jim Carroll' },
+      },
+    ],
+    afternoon: [
+      { company: 'Practitioner Group', title: 'Tax Aware Long-Short Working Group', speakers: 'Keenan Szulik' },
+      { company: 'Parametric · Morgan Stanley', placeholder: true, speakers: 'Paul Bouchey' },
+      { company: 'DBi', title: 'Can We Make Managed Futures More Tax Efficient?', speakers: 'Andrew Beer' },
+      { company: 'Vise', placeholder: true },
+      { company: 'Cambria', title: 'Closing Presentation', speakers: 'Meb Faber' },
+      { company: '', title: 'Closing Remarks', speakers: 'Brent Sullivan' },
+    ],
+    evening: [
+      { label: 'Evening Soiree', title: 'Mariners vs. Diamondbacks', sub: 'T-Mobile Park · Hosted by Tax Alpha Insider' },
+    ],
+  },
+];
+
+// ── version stamp (bump manually each draft) ─────────────
+const VERSION = 'v3';
+const STAMP = 'April 21, 2026';
+
+// ── build ────────────────────────────────────────────────
+
+const root = d3.select('#root');
+
+// Header
+const hdr = root.append('div').attr('class', 'hdr');
+const hl = hdr.append('div');
+hl.append('div').attr('class', 'hdr-name').text('Basis Northwest');
+hl.append('div').attr('class', 'hdr-sub').text('Taxable Wealth Innovation Conference');
+const hm = hdr.append('div').attr('class', 'hdr-meta');
+hm.append('div').attr('class', 'hdr-prelim').text('Preliminary');
+hm.append('div').attr('class', 'hdr-version').text(`${VERSION} · ${STAMP}`);
+hm.append('div').attr('class', 'hdr-dates').text('May 27 to 29, 2026 · Seattle, Washington');
+
+root.append('div').attr('class', 'rule');
+
+const grid = root.append('div').attr('class', 'days');
+
+// Row 0: Wednesday pre-conf (full width)
+const wedCell = grid.append('div').attr('class', 'cell full-width');
+const wb = wedCell.append('div').attr('class', 'wed-band');
+const wl = wb.append('div').attr('class', 'wed-left');
+wl.append('div').attr('class', 'wed-eyebrow').text('Pre-Conference · Wednesday, May 27, 2026');
+wl.append('div').attr('class', 'wed-title').text('Opening Night Gathering');
+const wr = wb.append('div').attr('class', 'wed-right');
+wr.append('div').attr('class', 'wed-host').text('Hosted by Canvas');
+wr.append('div').attr('class', 'wed-loc').text('Aerlume · Seattle, Washington');
+
+// Row 1: day headings
+DAYS.forEach(day => {
+  const cell = grid.append('div').attr('class', 'cell');
+  const dh = cell.append('div').attr('class', 'day-head');
+  dh.append('div').attr('class', 'day-label').text(day.label);
+  dh.append('div').attr('class', 'day-date').text(day.date);
+});
+
+// Row 2: morning
+DAYS.forEach(day => {
+  const cell = grid.append('div').attr('class', 'cell');
+  cell.append('div').attr('class', 'sec-label').text('Morning · Main Stage');
+  buildRows(cell, day.morning);
+});
+
+// Row 3: breakouts (separated from lunch — no concurrent messaging)
+DAYS.forEach(day => {
+  const cell = grid.append('div').attr('class', 'cell');
+  const bb = cell.append('div').attr('class', 'breakout-block');
+  bb.append('div').attr('class', 'breakout-hdr').text('Breakout Sessions');
+  const rh = bb.append('div').attr('class', 'room-headers');
+  rh.append('div').attr('class', 'room-lbl').text('Breakout A');
+  rh.append('div').attr('class', 'room-lbl').text('Breakout B');
+  day.breakouts.forEach(slot => {
+    const row = bb.append('div').attr('class', 'bslot');
+    buildBCard(row, slot.lla);
+    buildBCard(row, slot.llb);
+  });
+});
+
+// Row 4: afternoon
+DAYS.forEach(day => {
+  const cell = grid.append('div').attr('class', 'cell');
+  cell.append('div').attr('class', 'sec-label').text('Afternoon · Main Stage');
+  buildRows(cell, day.afternoon);
+});
+
+// Row 5: evening — flex cells so both columns fill same height
+DAYS.forEach(day => {
+  const cell = grid.append('div').attr('class', 'cell eve-cell');
+  const stack = cell.append('div').attr('class', 'eve-stack');
+  day.evening.forEach(ev => {
+    const blk = stack.append('div').attr('class', 'eve-block');
+    blk.append('div').attr('class', 'eve-label').text(ev.label);
+    blk.append('div').attr('class', 'eve-title').text(ev.title);
+    blk.append('div').attr('class', 'eve-sub').text(ev.sub);
+  });
+});
+
+// Footer
+const foot = root.append('div').attr('class', 'footer');
+foot.append('div').attr('class', 'footer-left')
+  .html(`Presented by <strong>Canvas</strong> &nbsp;·&nbsp; Taxable Wealth Strategies &nbsp;·&nbsp; Preliminary ${VERSION} · ${STAMP}`);
+foot.append('div').attr('class', 'footer-right').text('basisconf.com');
+
+// Export button (outside #root so it doesn't appear in capture)
+const bar = d3.select('body').append('div').attr('class', 'export-bar');
+const btn = bar.append('button').attr('class', 'export-btn').text('Export Image');
+btn.on('click', async function() {
+  btn.attr('disabled', true).text('Rendering...');
+  const canvas = await html2canvas(document.getElementById('root'), {
+    scale: 4,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#EAE0CB',
+    logging: false,
+  });
+  const link = document.createElement('a');
+  link.download = `basis-northwest-2026-agenda-${new Date().toISOString().slice(0,10)}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  btn.attr('disabled', null).text('Export Image');
+});
+
+// ── helpers ──────────────────────────────────────────────
+
+function buildRows(parent, sessions) {
+  const wrap = parent.append('div').attr('class', 'rows');
+  sessions.forEach(s => {
+    const row = wrap.append('div').attr('class', 'row');
+    const left = row.append('div').attr('class', 'row-left');
+
+    // title first — primary element
+    if (s.title) {
+      left.append('div').attr('class', 'row-title').text(s.title);
+    } else {
+      left.append('div').attr('class', 'row-title tbd').text('Title TBD');
+    }
+
+    // company — secondary label below title
+    if (s.company) {
+      left.append('div')
+        .attr('class', 'row-company' + (s.canvas ? ' canvas-co' : ''))
+        .text(s.company);
+    }
+
+    // speakers — right side
+    if (s.speakers) {
+      row.append('div').attr('class', 'row-speakers').text(s.speakers);
+    } else if (s.placeholder) {
+      row.append('div').attr('class', 'row-speakers tbd').text('Speaker TBD');
+    }
+  });
+}
+
+function buildBCard(parent, session) {
+  if (!session) {
+    const card = parent.append('div').attr('class', 'bcard tbd-card');
+    card.append('div').attr('class', 'bcard-title tbd').text('Session TBD');
+    return;
+  }
+  const card = parent.append('div').attr('class', 'bcard');
+  card.append('div').attr('class', 'bcard-title').text(session.title);
+  if (session.speakers) card.append('div').attr('class', 'bcard-speakers').text(session.speakers);
+}
+</script>
+</body>
+</html>
