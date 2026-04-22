@@ -198,23 +198,35 @@
     }
     .row:last-child { border-bottom: none; }
 
+    /* pending rows get an amber left border + faint tint */
+    .row.pending {
+      border-left: 3px solid var(--tan);
+      padding-left: 7px;
+      background: rgba(196,154,90,0.08);
+      margin-left: -10px;
+      margin-right: -10px;
+      padding-right: 10px;
+    }
+
     .row-left { display: flex; flex-direction: column; gap: 2px; }
 
     /* Title is the primary element — same treatment as bcard-title */
     .row-title {
-      font-size: 8px;
+      font-size: 9px;
       font-weight: 600;
       color: var(--text);
       line-height: 1.3;
     }
     .row-title.tbd {
-      color: var(--placeholder);
-      font-weight: 400;
+      color: var(--tan);
+      font-weight: 700;
+      font-size: 8.5px;
+      letter-spacing: 0.05em;
     }
 
     /* Company is a small secondary label below the title */
     .row-company {
-      font-size: 7px;
+      font-size: 7.5px;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -223,16 +235,23 @@
     }
     .row-company.canvas-co { color: var(--moss); }
 
+    .row-right { text-align: right; align-self: center; display: flex; flex-direction: column; gap: 1px; }
+    .row-host {
+      font-size: 8px;
+      font-weight: 600;
+      color: var(--cedar);
+      white-space: nowrap;
+    }
     .row-speakers {
-      font-size: 7.5px;
+      font-size: 8px;
       font-weight: 400;
       color: var(--muted);
       text-align: right;
       white-space: nowrap;
-      align-self: center;
     }
     .row-speakers.tbd {
-      color: var(--placeholder);
+      color: var(--tan);
+      font-weight: 600;
     }
 
     /* ── BREAKOUT BLOCK ──────────────────── */
@@ -287,24 +306,43 @@
       min-height: 42px;
     }
     .bcard.tbd-card {
-      background: rgba(255,255,255,0.03);
-      border-left-color: rgba(255,255,255,0.12);
+      background: rgba(196,154,90,0.12);
+      border-left-color: var(--tan);
     }
     .bcard-title {
-      font-size: 8px;
+      font-size: 9px;
       font-weight: 600;
       color: var(--warm);
       line-height: 1.3;
     }
     .bcard-title.tbd {
-      color: rgba(255,255,255,0.4);
-      font-weight: 400;
+      color: var(--tan);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .bcard-company {
+      font-size: 7.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-top: 1px;
+    }
+    .bcard-host {
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--tan);
+      margin-top: 1px;
     }
     .bcard-speakers {
-      font-size: 7px;
+      font-size: 8px;
       color: rgba(255,255,255,0.65);
       line-height: 1.4;
       margin-top: 1px;
+    }
+    .bcard-speakers.tbd {
+      color: var(--tan);
+      font-weight: 600;
     }
 
     /* ── EVENING ─────────────────────────── */
@@ -415,24 +453,24 @@ const DAYS = [
     breakouts: [
       {
         lla: { title: 'Partnership Solutions', speakers: 'Morgan Stanley' },
-        llb: { title: 'Qualified Opportunity Zone Panel', speakers: 'Terry Cook · Nick Rosenthal · Robert Dupree · Jim Dubeck' },
+        llb: { company: 'OZ / Griffin Capital / CIM Group', placeholder: true, speakers: 'Terry Cook · Nick Rosenthal · Robert Dupree · Jim Dubeck' },
       },
       {
-        lla: { title: '351 Exchange Panel', speakers: 'John West · Meb Faber · Ryan Kirlin · Rafael Zayas' },
-        llb: { title: 'Tax-Aware Private Real Estate' },
+        lla: { title: '351 Exchange Panel', host: 'John West', speakers: 'Meb Faber · Ryan Kirlin · Rafael Zayas' },
+        llb: { company: 'Arquitel', title: 'Unlocking Tax Alpha in Private Real Estate: Why Most Managers Leave It on the Table', speakers: 'Andrew Berman · Nick Bruce' },
       },
     ],
     afternoon: [
       { company: 'f/m Investments', placeholder: true, speakers: 'Alex Morris' },
-      { company: 'Tax Foundation', title: 'Policy & Tax Alpha', speakers: 'Daniel Bunn' },
+      { company: 'Tax Foundation', placeholder: true, speakers: 'Daniel Bunn' },
       { company: 'AQR Capital Management', title: 'The Tax Benefits of Pre-Tax Alpha', speakers: 'Joseph Liberman' },
-      { company: 'AQR · Fort Point Capital Partners', placeholder: true, speakers: 'Ralph Drybrough · Roy Haya' },
+      { company: 'AQR · Fort Point Capital Partners', placeholder: true, host: 'Ralph Drybrough', speakers: 'Roy Haya · Ted Pyne · Vijay Boyapati · Jim Totten' },
       { company: 'Nuveen · Brooklyn Investment Group', title: 'Building Tax-Smart Portfolios: From Asset Allocation and Private Markets to Long/Short SMAs', speakers: 'Erkko Etula · Katrina DiFiglia · Jill Jensen' },
       { company: 'Alliance Bernstein', placeholder: true },
     ],
     evening: [
       { label: 'Evening Soiree', title: 'Hosted by First Trust', sub: 'Seattle, Washington' },
-      { label: 'Dinner', title: 'Nuveen · Brooklyn', sub: 'Offsite · By invitation' },
+      { label: 'Dinner', title: 'Hosted by Nuveen · Brooklyn', sub: 'Offsite · By invitation' },
     ],
   },
   {
@@ -442,35 +480,35 @@ const DAYS = [
       { company: 'Basis Northwest', title: 'Speaker Salon', speakers: 'Brent Sullivan' },
       { company: 'Canvas', title: 'AMA: Canvas, Coffee & Everything Taxable Wealth', speakers: 'Joe Giroux', canvas: true },
       { company: 'Dimensional Fund Advisors', title: 'Long-Only & Long-Short SMAs', speakers: 'Savina Rizova' },
-      { company: 'Brooklyn Fi · DFA · Simplify', placeholder: true, speakers: 'AJ Ayers · Savina Rizova · Paisley Nardini' },
+      { company: 'Brooklyn Fi · DFA · Simplify', placeholder: true, host: 'AJ Ayers', speakers: 'Savina Rizova · Paisley Nardini' },
       { company: 'First Trust', title: "It's Not What You Make, But What You Can Spend: Tax-Efficient Real Estate Investing", speakers: 'Christian Lena' },
     ],
     breakouts: [
       {
-        lla: { title: 'Single Stock Concentration Panel', speakers: 'Shang Chou · Mike Allison · Mohsen Ghazi' },
+        lla: { title: 'Single Stock Concentration Panel', host: 'Shang Chou', speakers: 'Mike Allison · Mohsen Ghazi · Erkko Etula' },
         llb: null,
       },
       {
         lla: { title: 'Tax-Efficient Fixed Income. Yes.', speakers: 'Dave Nadig · Eric Golden' },
-        llb: { title: 'Private Placement Life Insurance Panel', speakers: 'Dave Reynolds · Travis Burke · Mohsen Ghazi · Jim Carroll' },
+        llb: { title: 'Private Placement Life Insurance Panel', host: 'Dave Reynolds', speakers: 'Travis Burke · Mohsen Ghazi · Jim Carroll' },
       },
     ],
     afternoon: [
-      { company: 'Practitioner Group', title: 'Tax Aware Long-Short Working Group', speakers: 'Keenan Szulik' },
+      { company: 'Slocum Management', title: 'Live from the Field: Tax Aware Long-Short Working Group', speakers: 'Keenan Szulik' },
       { company: 'Parametric · Morgan Stanley', placeholder: true, speakers: 'Paul Bouchey' },
       { company: 'DBi', title: 'Can We Make Managed Futures More Tax Efficient?', speakers: 'Andrew Beer' },
       { company: 'Vise', placeholder: true },
-      { company: 'Cambria', title: 'Closing Presentation', speakers: 'Meb Faber' },
+      { company: 'Cambria', placeholder: true, speakers: 'Meb Faber' },
       { company: '', title: 'Closing Remarks', speakers: 'Brent Sullivan' },
     ],
     evening: [
-      { label: 'Evening Soiree', title: 'Mariners vs. Diamondbacks', sub: 'T-Mobile Park · Hosted by Tax Alpha Insider' },
+      { label: 'Evening Soiree', title: 'Mariners vs. Diamondbacks', sub: 'T-Mobile Park · Seattle, Washington' },
     ],
   },
 ];
 
 // ── version stamp (bump manually each draft) ─────────────
-const VERSION = 'v3';
+const VERSION = 'v5';
 const STAMP = 'April 21, 2026';
 
 // ── build ────────────────────────────────────────────────
@@ -580,7 +618,8 @@ btn.on('click', async function() {
 function buildRows(parent, sessions) {
   const wrap = parent.append('div').attr('class', 'rows');
   sessions.forEach(s => {
-    const row = wrap.append('div').attr('class', 'row');
+    const isPending = s.placeholder || (!s.title && !s.speakers);
+    const row = wrap.append('div').attr('class', isPending ? 'row pending' : 'row');
     const left = row.append('div').attr('class', 'row-left');
 
     // title first — primary element
@@ -598,10 +637,11 @@ function buildRows(parent, sessions) {
     }
 
     // speakers — right side
-    if (s.speakers) {
-      row.append('div').attr('class', 'row-speakers').text(s.speakers);
-    } else if (s.placeholder) {
-      row.append('div').attr('class', 'row-speakers tbd').text('Speaker TBD');
+    if (s.host || s.speakers || s.placeholder) {
+      const right = row.append('div').attr('class', 'row-right');
+      if (s.host) right.append('div').attr('class', 'row-host').text('Host: ' + s.host);
+      if (s.speakers) right.append('div').attr('class', 'row-speakers').text(s.speakers);
+      else if (s.placeholder && !s.host) right.append('div').attr('class', 'row-speakers tbd').text('Speaker TBD');
     }
   });
 }
@@ -612,9 +652,20 @@ function buildBCard(parent, session) {
     card.append('div').attr('class', 'bcard-title tbd').text('Session TBD');
     return;
   }
-  const card = parent.append('div').attr('class', 'bcard');
-  card.append('div').attr('class', 'bcard-title').text(session.title);
-  if (session.speakers) card.append('div').attr('class', 'bcard-speakers').text(session.speakers);
+  const isPending = session.placeholder || !session.title;
+  const card = parent.append('div').attr('class', isPending ? 'bcard tbd-card' : 'bcard');
+  if (session.title) {
+    card.append('div').attr('class', 'bcard-title').text(session.title);
+  } else {
+    card.append('div').attr('class', 'bcard-title tbd').text('Title TBD');
+  }
+  if (session.company) card.append('div').attr('class', 'bcard-company').text(session.company);
+  if (session.host) card.append('div').attr('class', 'bcard-host').text('Host: ' + session.host);
+  if (session.speakers) {
+    card.append('div').attr('class', 'bcard-speakers').text(session.speakers);
+  } else if (session.placeholder) {
+    card.append('div').attr('class', 'bcard-speakers tbd').text('Speaker TBD');
+  }
 }
 </script>
 </body>
