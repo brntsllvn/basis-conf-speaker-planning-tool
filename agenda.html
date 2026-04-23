@@ -240,14 +240,12 @@
       font-size: 8px;
       font-weight: 600;
       color: var(--cedar);
-      white-space: nowrap;
     }
     .row-speakers {
       font-size: 8px;
       font-weight: 400;
       color: var(--muted);
       text-align: right;
-      white-space: nowrap;
     }
     .row-speakers.tbd {
       color: var(--tan);
@@ -462,7 +460,7 @@ const DAYS = [
     ],
     afternoon: [
       { company: 'f/m Investments', placeholder: true, speakers: 'Alex Morris' },
-      { company: 'Tax Foundation', placeholder: true, speakers: 'Daniel Bunn' },
+      { company: 'Tax Foundation', title: "Tax Foundation's Objective Lens on Partisan Policy and What Proposals Mean for Your Clients", speakers: 'Daniel Bunn' },
       { company: 'AQR Capital Management', title: 'The Tax Benefits of Pre-Tax Alpha', speakers: 'Joseph Liberman' },
       { company: 'AQR · Fort Point Capital Partners', placeholder: true, host: 'Ralph Drybrough', speakers: 'Roy Haya · Ted Pyne · Vijay Boyapati · Jim Totten' },
       { company: 'Nuveen · Brooklyn Investment Group', title: 'Building Tax-Smart Portfolios: From Asset Allocation and Private Markets to Long/Short SMAs', speakers: 'Erkko Etula · Katrina DiFiglia · Jill Jensen' },
@@ -494,7 +492,7 @@ const DAYS = [
       },
     ],
     afternoon: [
-      { company: 'Slocum Management', title: 'Live from the Field: Tax Aware Long-Short Working Group', speakers: 'Keenan Szulik' },
+      { company: 'Slocum Management', title: 'Live from the Field: Tax Aware Long-Short Working Group', host: 'Keenan Szulik' },
       { company: 'Parametric · Morgan Stanley', placeholder: true, speakers: 'Paul Bouchey' },
       { company: 'DBi', title: 'Can We Make Managed Futures More Tax Efficient?', speakers: 'Andrew Beer' },
       { company: 'Vise', placeholder: true },
@@ -626,7 +624,7 @@ function buildRows(parent, sessions) {
     if (s.title) {
       left.append('div').attr('class', 'row-title').text(s.title);
     } else {
-      left.append('div').attr('class', 'row-title tbd').text('Title TBD');
+      left.append('div').attr('class', 'row-title tbd').text('Title To-Be-Announced');
     }
 
     // company — secondary label below title
@@ -641,7 +639,7 @@ function buildRows(parent, sessions) {
       const right = row.append('div').attr('class', 'row-right');
       if (s.host) right.append('div').attr('class', 'row-host').text('Host: ' + s.host);
       if (s.speakers) right.append('div').attr('class', 'row-speakers').text(s.speakers);
-      else if (s.placeholder && !s.host) right.append('div').attr('class', 'row-speakers tbd').text('Speaker TBD');
+      else if (s.placeholder && !s.host) right.append('div').attr('class', 'row-speakers tbd').text('Speaker To-Be-Announced');
     }
   });
 }
@@ -649,7 +647,7 @@ function buildRows(parent, sessions) {
 function buildBCard(parent, session) {
   if (!session) {
     const card = parent.append('div').attr('class', 'bcard tbd-card');
-    card.append('div').attr('class', 'bcard-title tbd').text('Session TBD');
+    card.append('div').attr('class', 'bcard-title tbd').text('Session To-Be-Announced');
     return;
   }
   const isPending = session.placeholder || !session.title;
@@ -657,14 +655,14 @@ function buildBCard(parent, session) {
   if (session.title) {
     card.append('div').attr('class', 'bcard-title').text(session.title);
   } else {
-    card.append('div').attr('class', 'bcard-title tbd').text('Title TBD');
+    card.append('div').attr('class', 'bcard-title tbd').text('Title To-Be-Announced');
   }
   if (session.company) card.append('div').attr('class', 'bcard-company').text(session.company);
   if (session.host) card.append('div').attr('class', 'bcard-host').text('Host: ' + session.host);
   if (session.speakers) {
     card.append('div').attr('class', 'bcard-speakers').text(session.speakers);
   } else if (session.placeholder) {
-    card.append('div').attr('class', 'bcard-speakers tbd').text('Speaker TBD');
+    card.append('div').attr('class', 'bcard-speakers tbd').text('Speaker To-Be-Announced');
   }
 }
 </script>
