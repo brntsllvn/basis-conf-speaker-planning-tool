@@ -108,16 +108,16 @@
       display: flex; flex-direction: column; gap: 1px;
     }
     .session--canvas { border-left-color: var(--moss); }
-    .session--tbd    { border-left-color: var(--tan); }
+
 
 
     .session-company         { font-size: 6px; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; }
     .session-company--canvas { color: var(--moss); }
     .session-title           { font-size: 7.5px; font-weight: 600; color: var(--text); line-height: 1.2; }
-    .session-title--tbd      { color: var(--tan); }
+    .session-title--tbd      { color: var(--muted); font-style: italic; }
     .session-host            { font-size: 6.5px; font-weight: 600; color: var(--cedar); }
     .session-speakers        { font-size: 6.5px; color: var(--muted); }
-    .session-speakers--tbd   { color: var(--tan); font-style: italic; }
+    .session-speakers--tbd   { color: var(--muted); font-style: italic; }
 
     /* ── BREAKOUT ─────────────────────────────────────── */
     .bk { position: relative; }
@@ -194,7 +194,7 @@ function slotToTime(n) {
 // ── data ──────────────────────────────────────────────────
 
 function buildDays(state) {
-  const CONTENT = new Set(['keynote', 'solo', 'panel']);
+  const CONTENT = new Set(['keynote', 'solo', 'panel', 'open']);
   const UTIL = /^(doors|registration|breakfast|lunch|expo|happy hour|thursday|load|mariners|dinner|ft closing|thanks for coming)/i;
 
   const cmap = Object.fromEntries(state.contacts.map(c => [c.id, c]));
@@ -214,7 +214,7 @@ function buildDays(state) {
       startSlot:   slot.startSlot,
       company:     slot.company || '',
       title:       slot.title || null,
-      placeholder: slot.isTbd || !slot.title,
+      placeholder: slot.isTbd || !slot.title || slot.type === 'open' || slot.title === 'To Be Announced',
       speakers,
       host:   mod ? nameOf(mod.contactId) : null,
       canvas: slot.isSponsored && (slot.company || '').includes('Canvas'),
@@ -282,12 +282,11 @@ function buildSession(parent, session) {
   const isTbd = session.placeholder || !session.title;
 
   let cls = 'session';
-  if (isTbd)             cls += ' session--tbd';
-  else if (session.canvas) cls += ' session--canvas';
+  if (!isTbd && session.canvas) cls += ' session--canvas';
 
   const el = parent.append('div').attr('class', cls);
 
-  const title   = session.title || 'Title to-be-announced';
+  const title   = isTbd ? 'Title to-be-announced' : session.title;
   const compCls = 'session-company' + (session.canvas ? ' session-company--canvas' : '');
 
   if (session.company) el.append('div').attr('class', compCls).text(session.company);
