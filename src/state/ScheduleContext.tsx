@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useReducer, useEffect, useRef, useState, useCallback, type ReactNode } from 'react';
 import type { AppState, DayId } from '../types/schedule';
 import { scheduleReducer, type Action } from './reducer';
 import { loadState, saveState } from './persistence';
@@ -17,7 +17,15 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(scheduleReducer, undefined, () => createInitialState());
   const [activeDay, setActiveDay] = useState<DayId>('thu');
   const [loaded, setLoaded] = useState(false);
+  // Only save when a real user action has occurred — prevents clobbering the DB
+  // if the app loads stale/seed state and the user hasn't touched anything yet.
+  const [dirty, setDirty] = useState(false);
   const saveTimeoutRef = useRef<number | undefined>(undefined);
+
+  const wrappedDispatch = useCallback((action: Action) => {
+    if (action.type !== 'IMPORT_STATE') setDirty(true);
+    dispatch(action);
+  }, []);
 
   // Load from server on mount
   useEffect(() => {
@@ -28,8 +36,9 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Save to server on every change (debounced), but only after initial load
+  // and only when a user action has actually changed the state.
   useEffect(() => {
-    if (!loaded) return;
+    if (!loaded || !dirty) return;
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
@@ -39,10 +48,10 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     };
-  }, [state, loaded]);
+  }, [state, loaded, dirty]);
 
   return (
-    <ScheduleContext.Provider value={{ state, dispatch, activeDay, setActiveDay }}>
+    <ScheduleContext.Provider value={{ state, dispatch: wrappedDispatch, activeDay, setActiveDay }}>
       {children}
     </ScheduleContext.Provider>
   );

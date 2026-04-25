@@ -24,10 +24,9 @@
       --tan-rule:  #C8B880;
       --text:      #1A0E08;
       --muted:     #7A6A55;
-      --placeholder: #A0907A;
     }
 
-    @page { size: legal portrait; margin: 0; }
+    @page { size: letter portrait; margin: 0; }
 
     html, body {
       width: 8.5in;
@@ -39,632 +38,395 @@
       print-color-adjust: exact;
     }
 
-    /* ── HEADER ─────────────────────────── */
+    /* ── LAYOUT ───────────────────────────────────────── */
+    #root { display: block; }
+    .section { position: relative; }
+    .section::after {
+      content: ''; position: absolute; bottom: 0; left: 14px; right: 14px;
+      height: 1px; background: var(--tan-light);
+    }
+    .section--nobot::after { display: none; }
+    .section--cols { display: grid; grid-template-columns: 1fr 1fr; }
+    .col { padding: 7px 14px; }
+    .col--eve { display: flex; flex-direction: column; padding-bottom: 10px; }
+
+    /* ── HEADER ───────────────────────────────────────── */
     .hdr {
       background: var(--bark);
-      padding: 14px 30px 12px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
+      padding: 10px 24px 9px;
+      display: grid; grid-template-columns: 1fr auto; align-items: center;
     }
-    .hdr-name {
-      font-family: 'Newsreader', Georgia, serif;
-      font-size: 30px;
-      font-weight: 700;
-      color: var(--warm);
-      line-height: 1;
-    }
-    .hdr-sub {
-      font-size: 7.5px;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--tan);
-      margin-top: 5px;
-    }
-    .hdr-meta { text-align: right; }
-    .hdr-prelim {
-      font-family: 'Newsreader', Georgia, serif;
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--tan);
-      line-height: 1;
-      letter-spacing: 0.04em;
-    }
-    .hdr-version {
-      font-size: 7.5px;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      margin-top: 5px;
-    }
-    .hdr-dates {
-      font-size: 8px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--fog);
-      margin-top: 3px;
-    }
+    .hdr-name    { font-family: 'Newsreader', serif; font-size: 26px; font-weight: 700; color: var(--warm); line-height: 1; }
+    .hdr-sub     { font-size: 7px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--tan); margin-top: 4px; }
+    .hdr-meta    { text-align: right; }
+    .hdr-prelim  { font-family: 'Newsreader', serif; font-size: 22px; font-weight: 700; color: var(--tan); line-height: 1; letter-spacing: 0.04em; }
+    .hdr-version { font-size: 7px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-top: 4px; }
+    .hdr-dates   { font-size: 7.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fog); margin-top: 2px; }
 
-    .rule {
-      height: 3px;
-      background: linear-gradient(90deg, var(--moss) 0%, var(--fern) 45%, var(--tan) 100%);
-    }
+    /* ── RULE ─────────────────────────────────────────── */
+    .rule { height: 3px; background: linear-gradient(90deg, var(--moss) 0%, var(--fern) 45%, var(--tan) 100%); }
 
-    /* ── OUTER GRID ──────────────────────── */
-    .days {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
+    /* ── WEDNESDAY STRIP ─────────────────────────────── */
+    .wed-wrap { padding: 7px 14px; }
 
-    .cell {
-      padding: 9px 18px;
-      border-right: 1px solid var(--tan-light);
-      border-bottom: 1px solid var(--tan-light);
-    }
-    .cell:nth-child(even) { border-right: none; }
-    .cell.full-width {
-      grid-column: 1 / -1;
-      border-right: none;
-    }
-    .cell.no-bottom { border-bottom: none; }
+    /* ── DAY HEADING ──────────────────────────────────── */
+    .day-head  { padding-bottom: 5px; border-bottom: 2px solid var(--pine); }
+    .day-label { font-family: 'Newsreader', serif; font-size: 15px; font-weight: 700; color: var(--pine); }
+    .day-date  { font-size: 7px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
 
-    /* evening cells need full height for the flex stretch */
-    .cell.eve-cell {
-      display: flex;
-      flex-direction: column;
-      border-bottom: none;
-      padding-bottom: 10px;
-    }
-
-    /* ── WEDNESDAY BAND ──────────────────── */
-    .wed-band {
-      background: var(--cedar);
-      border-radius: 4px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .wed-left { display: flex; flex-direction: column; gap: 2px; }
-    .wed-eyebrow {
-      font-size: 7px;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--tan);
-    }
-    .wed-title {
-      font-family: 'Newsreader', Georgia, serif;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--warm);
-    }
-    .wed-right { text-align: right; }
-    .wed-host {
-      font-size: 8px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.8);
-    }
-    .wed-loc {
-      font-size: 7.5px;
-      color: rgba(255,255,255,0.6);
-      margin-top: 2px;
-    }
-
-    /* ── DAY HEADING ─────────────────────── */
-    .day-head { padding-bottom: 6px; border-bottom: 2px solid var(--pine); }
-    .day-label {
-      font-family: 'Newsreader', Georgia, serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--pine);
-    }
-    .day-date {
-      font-size: 7.5px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    /* ── SECTION LABEL ───────────────────── */
+    /* ── SECTION LABEL ────────────────────────────────── */
     .sec-label {
-      font-size: 7px;
-      font-weight: 700;
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-      color: var(--moss);
-      padding-bottom: 4px;
-      border-bottom: 1px solid var(--tan-rule);
-      margin-bottom: 3px;
+      font-size: 6.5px; font-weight: 700; letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--moss); padding-bottom: 4px; border-bottom: 1px solid var(--tan-rule); margin-bottom: 5px;
     }
 
-    /* ── SESSION ROWS ────────────────────── */
-    .rows { display: flex; flex-direction: column; }
+    /* ── THIN STRIPS ──────────────────────────────────── */
+    .strip {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 3px 0; margin-bottom: 5px;
+      border-top: 1px solid var(--tan-rule); border-bottom: 1px solid var(--tan-rule);
+      background: rgba(245,237,216,0.5);
+    }
+    .strip-label { font-size: 6.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--moss); }
+    .strip-time  { font-size: 6.5px; font-weight: 500; color: var(--muted); }
+    .lunch {
+      background: rgba(245,237,216,0.5);
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 0 14px; padding: 5px 0;
+      border-top: 1px solid var(--tan-rule); border-bottom: 1px solid var(--tan-rule);
+    }
+    .lunch-label { font-size: 6.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--moss); }
+    .lunch-time  { font-size: 7px; font-weight: 500; color: var(--muted); }
 
-    .row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      padding: 5px 0;
-      min-height: 40px;
-      align-items: center;
-      border-bottom: 1px solid #DDD3BB;
-    }
-    .row:last-child { border-bottom: none; }
+    /* ── SESSION LIST ─────────────────────────────────── */
+    .session-list { display: flex; flex-direction: column; gap: 5px; }
 
-    /* pending rows get an amber left border + faint tint */
-    .row.pending {
-      border-left: 3px solid var(--tan);
-      padding-left: 7px;
-      background: rgba(196,154,90,0.08);
-      margin-left: -10px;
-      margin-right: -10px;
-      padding-right: 10px;
+    /* ── SESSIONS (no boxes — left accent + text stack) ── */
+    .session {
+      padding: 2px 0 2px 8px;
+      border-left: 2px solid var(--cedar);
+      display: flex; flex-direction: column; gap: 1px;
     }
+    .session--canvas { border-left-color: var(--moss); }
+    .session--tbd    { border-left-color: var(--tan); }
 
-    .row-left { display: flex; flex-direction: column; gap: 2px; }
 
-    /* Title is the primary element — same treatment as bcard-title */
-    .row-title {
-      font-size: 9px;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.3;
-    }
-    .row-title.tbd {
-      color: var(--tan);
-      font-weight: 700;
-      font-size: 8.5px;
-      letter-spacing: 0.05em;
-    }
+    .session-company         { font-size: 6px; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; }
+    .session-company--canvas { color: var(--moss); }
+    .session-title           { font-size: 7.5px; font-weight: 600; color: var(--text); line-height: 1.2; }
+    .session-title--tbd      { color: var(--tan); }
+    .session-host            { font-size: 6.5px; font-weight: 600; color: var(--cedar); }
+    .session-speakers        { font-size: 6.5px; color: var(--muted); }
+    .session-speakers--tbd   { color: var(--tan); font-style: italic; }
 
-    /* Company is a small secondary label below the title */
-    .row-company {
-      font-size: 7.5px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      line-height: 1.2;
+    /* ── BREAKOUT ─────────────────────────────────────── */
+    .bk { position: relative; }
+    .bk::after { content: ''; position: absolute; bottom: 0; left: 14px; right: 14px; height: 1px; background: var(--tan-light); }
+    .bk > .sec-label { padding-left: 14px; padding-right: 14px; padding-top: 7px; margin-bottom: 0; border-bottom: none; position: relative; }
+    .bk > .sec-label::after { content: ''; position: absolute; bottom: 0; left: 14px; right: 14px; height: 1px; background: var(--tan-rule); }
+    .bk-days { display: grid; grid-template-columns: 1fr 1fr; }
+    .bk-half { padding: 4px 14px 7px; }
+    .bk-day-head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding-bottom: 4px; border-bottom: 1px solid var(--tan-rule); margin-bottom: 5px;
     }
-    .row-company.canvas-co { color: var(--moss); }
+    .bk-day-lbl   { font-size: 7px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--moss); }
+    .bk-day-range { font-size: 6.5px; color: var(--muted); }
+    .bk-rooms     { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start; }
+    .bk-room      { display: flex; flex-direction: column; gap: 4px; }
+    .bk-room-lbl  { font-size: 6px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fog); margin-bottom: 1px; }
 
-    .row-right { text-align: right; align-self: center; display: flex; flex-direction: column; gap: 1px; }
-    .row-host {
-      font-size: 8px;
-      font-weight: 600;
-      color: var(--cedar);
-    }
-    .row-speakers {
-      font-size: 8px;
-      font-weight: 400;
-      color: var(--muted);
-      text-align: right;
-    }
-    .row-speakers.tbd {
-      color: var(--tan);
-      font-weight: 600;
-    }
-
-    /* ── BREAKOUT BLOCK ──────────────────── */
-    .breakout-block {
-      background: var(--pine);
-      border-radius: 5px;
-      padding: 8px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .breakout-hdr {
-      font-size: 7px;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--tan);
-      padding-bottom: 4px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      margin-bottom: 1px;
-    }
-    .room-headers {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-    .room-lbl {
-      font-size: 7px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.6);
-    }
-    .bslot {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      align-items: stretch;
-    }
-    .bslot + .bslot {
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding-top: 5px;
-    }
-    .bcard {
-      background: rgba(255,255,255,0.07);
-      border-radius: 3px;
-      border-left: 2px solid var(--tan);
-      padding: 5px 7px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-height: 42px;
-    }
-    .bcard.tbd-card {
-      background: rgba(196,154,90,0.12);
-      border-left-color: var(--tan);
-    }
-    .bcard-title {
-      font-size: 9px;
-      font-weight: 600;
-      color: var(--warm);
-      line-height: 1.3;
-    }
-    .bcard-title.tbd {
-      color: var(--tan);
-      font-weight: 700;
-      letter-spacing: 0.05em;
-    }
-    .bcard-company {
-      font-size: 7.5px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      margin-top: 1px;
-    }
-    .bcard-host {
-      font-size: 8px;
-      font-weight: 700;
-      color: var(--tan);
-      margin-top: 1px;
-    }
-    .bcard-speakers {
-      font-size: 8px;
-      color: rgba(255,255,255,0.65);
-      line-height: 1.4;
-      margin-top: 1px;
-    }
-    .bcard-speakers.tbd {
-      color: var(--tan);
-      font-weight: 600;
-    }
-
-    /* ── EVENING ─────────────────────────── */
-    .eve-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      flex: 1;
-    }
+    /* ── EVENING ──────────────────────────────────────── */
+    .eve-stack { display: flex; flex-direction: column; gap: 5px; flex: 1; }
     .eve-block {
       background: var(--cedar);
-      border-radius: 5px;
-      padding: 8px 12px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      padding: 9px 12px; flex: 1;
+      display: flex; flex-direction: column; justify-content: center;
     }
-    .eve-label {
-      font-size: 7px;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--tan);
-      margin-bottom: 3px;
-    }
-    .eve-title {
-      font-family: 'Newsreader', Georgia, serif;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--warm);
-      line-height: 1.25;
-    }
-    .eve-sub {
-      font-size: 7.5px;
-      color: rgba(255,255,255,0.65);
-      margin-top: 3px;
-    }
+    .eve-label { font-size: 6.5px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--tan); margin-bottom: 4px; }
+    .eve-title { font-family: 'Newsreader', serif; font-size: 13px; font-weight: 700; color: var(--warm); line-height: 1.25; }
+    .eve-sub   { font-size: 7.5px; color: rgba(255,255,255,0.6); margin-top: 3px; }
 
-    /* ── FOOTER ──────────────────────────── */
+    /* ── FOOTER ───────────────────────────────────────── */
     .footer {
-      background: var(--bark);
-      padding: 7px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: var(--bark); padding: 6px 24px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .footer-left {
-      font-size: 8px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.65);
-    }
+    .footer-left  { font-size: 7.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
     .footer-left strong { color: var(--tan); font-weight: 600; }
-    .footer-right {
-      font-family: 'Newsreader', Georgia, serif;
-      font-size: 9px;
-      color: rgba(255,255,255,0.7);
-    }
+    .footer-right { font-family: 'Newsreader', serif; font-size: 9px; color: rgba(255,255,255,0.65); }
 
-    /* ── EXPORT BUTTON ───────────────────── */
-    .export-bar {
-      width: 8.5in;
-      margin: 0 auto;
-      padding: 12px 0;
-      display: flex;
-      justify-content: flex-end;
-    }
-    .export-btn {
-      background: var(--pine);
-      color: var(--warm);
-      border: none;
-      border-radius: 4px;
-      padding: 8px 18px;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .export-btn:hover { background: var(--moss); }
+    /* ── EXPORT ───────────────────────────────────────── */
+    .export-bar { width: 8.5in; margin: 0 auto; padding: 12px 0; display: flex; justify-content: flex-end; }
+    .export-btn { background: var(--pine); color: var(--warm); border: none; border-radius: 4px; padding: 8px 18px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; }
+    .export-btn:hover    { background: var(--moss); }
     .export-btn:disabled { opacity: 0.5; cursor: wait; }
-
-    @media print {
-      .export-bar { display: none; }
-    }
+    @media print { .export-bar { display: none; } }
   </style>
 </head>
 <body>
 <div id="root"></div>
 <script>
 
-// placeholder: true  = title not confirmed; shown in muted color
-// speakers: null     = shown as TBD
+const VERSION  = 'v10';
+const STAMP    = 'April 24, 2026';
+const API_URL  = 'http://localhost:3001/api/state';
+const DAY_ORIGIN = 420;
 
-const DAYS = [
-  {
-    label: 'Day One',
-    date: 'Thursday · May 28, 2026',
-    morning: [
-      { company: 'Canvas', title: 'Taxable Wealth: From Core Strategies to Cutting Edge Solutions', speakers: 'Chris Loveless · Ehren Stanhope', canvas: true },
-      { company: 'Research Affiliates', title: 'Index Solutions for Tax Alpha Portfolios', speakers: 'Rob Arnott' },
-      { company: 'Alpha Architect', title: 'What is a Syndic?', speakers: 'Ryan Kirlin' },
-      { company: 'First Trust · Vest', title: 'Derivatives Evolution in Tax-Aware Portfolios', speakers: 'Jeff Chang · Jon DiGiovanni' },
-    ],
-    breakouts: [
-      {
-        lla: { title: 'Partnership Solutions', speakers: 'Morgan Stanley' },
-        llb: { company: 'OZ / Griffin Capital / CIM Group', placeholder: true, speakers: 'Terry Cook · Nick Rosenthal · Robert Dupree · Jim Dubeck' },
-      },
-      {
-        lla: { title: '351 Exchange Panel', host: 'John West', speakers: 'Meb Faber · Ryan Kirlin · Rafael Zayas' },
-        llb: { company: 'Arquitel', title: 'Unlocking Tax Alpha in Private Real Estate: Why Most Managers Leave It on the Table', speakers: 'Andrew Berman · Nick Bruce' },
-      },
-    ],
-    afternoon: [
-      { company: 'f/m Investments', placeholder: true, speakers: 'Alex Morris' },
-      { company: 'Tax Foundation', title: "Tax Foundation's Objective Lens on Partisan Policy and What Proposals Mean for Your Clients", speakers: 'Daniel Bunn' },
-      { company: 'AQR Capital Management', title: 'The Tax Benefits of Pre-Tax Alpha', speakers: 'Joseph Liberman' },
-      { company: 'AQR · Fort Point Capital Partners', placeholder: true, host: 'Ralph Drybrough', speakers: 'Roy Haya · Ted Pyne · Vijay Boyapati · Jim Totten' },
-      { company: 'Nuveen · Brooklyn Investment Group', title: 'Building Tax-Smart Portfolios: From Asset Allocation and Private Markets to Long/Short SMAs', speakers: 'Erkko Etula · Katrina DiFiglia · Jill Jensen' },
-      { company: 'Alliance Bernstein', placeholder: true },
-    ],
-    evening: [
-      { label: 'Evening Soiree', title: 'Hosted by First Trust', sub: 'Seattle, Washington' },
-      { label: 'Dinner', title: 'Hosted by Nuveen · Brooklyn', sub: 'Offsite · By invitation' },
-    ],
-  },
-  {
-    label: 'Day Two',
-    date: 'Friday · May 29, 2026',
-    morning: [
-      { company: 'Basis Northwest', title: 'Speaker Salon', speakers: 'Brent Sullivan' },
-      { company: 'Canvas', title: 'AMA: Canvas, Coffee & Everything Taxable Wealth', speakers: 'Joe Giroux', canvas: true },
-      { company: 'Dimensional Fund Advisors', title: 'Long-Only & Long-Short SMAs', speakers: 'Savina Rizova' },
-      { company: 'Brooklyn Fi · DFA · Simplify', placeholder: true, host: 'AJ Ayers', speakers: 'Savina Rizova · Paisley Nardini' },
-      { company: 'First Trust', title: "It's Not What You Make, But What You Can Spend: Tax-Efficient Real Estate Investing", speakers: 'Christian Lena' },
-    ],
-    breakouts: [
-      {
-        lla: { title: 'Single Stock Concentration Panel', host: 'Shang Chou', speakers: 'Mike Allison · Mohsen Ghazi · Erkko Etula' },
-        llb: null,
-      },
-      {
-        lla: { title: 'Tax-Efficient Fixed Income. Yes.', speakers: 'Dave Nadig · Eric Golden' },
-        llb: { title: 'Private Placement Life Insurance Panel', host: 'Dave Reynolds', speakers: 'Travis Burke · Mohsen Ghazi · Jim Carroll' },
-      },
-    ],
-    afternoon: [
-      { company: 'Slocum Management', title: 'Live from the Field: Tax Aware Long-Short Working Group', host: 'Keenan Szulik' },
-      { company: 'Parametric · Morgan Stanley', placeholder: true, speakers: 'Paul Bouchey' },
-      { company: 'DBi', title: 'Can We Make Managed Futures More Tax Efficient?', speakers: 'Andrew Beer' },
-      { company: 'Vise', placeholder: true },
-      { company: 'Cambria', placeholder: true, speakers: 'Meb Faber' },
-      { company: '', title: 'Closing Remarks', speakers: 'Brent Sullivan' },
-    ],
-    evening: [
-      { label: 'Evening Soiree', title: 'Mariners vs. Diamondbacks', sub: 'T-Mobile Park · Seattle, Washington' },
-    ],
-  },
-];
+const DAY_META = {
+  thu: { label: 'Day One', date: 'Thursday · May 28, 2026' },
+  fri: { label: 'Day Two', date: 'Friday · May 29, 2026' },
+};
 
-// ── version stamp (bump manually each draft) ─────────────
-const VERSION = 'v5';
-const STAMP = 'April 21, 2026';
+const EVENING = {
+  thu: [{ label: 'Evening Soiree', title: 'Hosted by First Trust', sub: 'Seattle, Washington' }],
+  fri: [{ label: 'Ballgame', title: 'Mariners vs. Diamondbacks', sub: 'T-Mobile Park · Seattle, Washington' }],
+};
 
-// ── build ────────────────────────────────────────────────
+function slotToTime(n) {
+  const m  = DAY_ORIGIN + n * 5;
+  const h  = Math.floor(m / 60), min = m % 60;
+  const ap = h >= 12 ? 'PM' : 'AM';
+  const dh = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+  return `${dh}:${min.toString().padStart(2, '0')} ${ap}`;
+}
 
-const root = d3.select('#root');
+// ── data ──────────────────────────────────────────────────
 
-// Header
-const hdr = root.append('div').attr('class', 'hdr');
-const hl = hdr.append('div');
-hl.append('div').attr('class', 'hdr-name').text('Basis Northwest');
-hl.append('div').attr('class', 'hdr-sub').text('Taxable Wealth Innovation Conference');
-const hm = hdr.append('div').attr('class', 'hdr-meta');
-hm.append('div').attr('class', 'hdr-prelim').text('Preliminary');
-hm.append('div').attr('class', 'hdr-version').text(`${VERSION} · ${STAMP}`);
-hm.append('div').attr('class', 'hdr-dates').text('May 27 to 29, 2026 · Seattle, Washington');
+function buildDays(state) {
+  const CONTENT = new Set(['keynote', 'solo', 'panel']);
+  const UTIL = /^(doors|registration|breakfast|lunch|expo|happy hour|thursday|load|mariners|dinner|ft closing|thanks for coming)/i;
 
-root.append('div').attr('class', 'rule');
+  const cmap = Object.fromEntries(state.contacts.map(c => [c.id, c]));
+  function nameOf(id) {
+    const c = cmap[id];
+    if (!c) return '';
+    const full = `${c.firstName || ''} ${c.lastName || ''}`.trim();
+    return full || c.name || '';
+  }
 
-const grid = root.append('div').attr('class', 'days');
+  function sessionFrom(slot) {
+    const speakers = slot.assignments
+      .filter(a => a.slotRole !== 'Moderator')
+      .map(a => nameOf(a.contactId)).filter(Boolean).join(' · ') || null;
+    const mod = slot.assignments.find(a => a.slotRole === 'Moderator');
+    return {
+      startSlot:   slot.startSlot,
+      company:     slot.company || '',
+      title:       slot.title || null,
+      placeholder: slot.isTbd || !slot.title,
+      speakers,
+      host:   mod ? nameOf(mod.contactId) : null,
+      canvas: slot.isSponsored && (slot.company || '').includes('Canvas'),
+    };
+  }
 
-// Row 0: Wednesday pre-conf (full width)
-const wedCell = grid.append('div').attr('class', 'cell full-width');
-const wb = wedCell.append('div').attr('class', 'wed-band');
-const wl = wb.append('div').attr('class', 'wed-left');
-wl.append('div').attr('class', 'wed-eyebrow').text('Pre-Conference · Wednesday, May 27, 2026');
-wl.append('div').attr('class', 'wed-title').text('Opening Night Gathering');
-const wr = wb.append('div').attr('class', 'wed-right');
-wr.append('div').attr('class', 'wed-host').text('Hosted by Canvas');
-wr.append('div').attr('class', 'wed-loc').text('Aerlume · Seattle, Washington');
+  return state.days.filter(d => d.id !== 'wed').map(day => {
+    const meta  = DAY_META[day.id] || { label: day.label, date: day.date };
+    const slots = state.slots.filter(s => s.dayId === day.id).sort((a, b) => a.startSlot - b.startSlot);
 
-// Row 1: day headings
-DAYS.forEach(day => {
-  const cell = grid.append('div').attr('class', 'cell');
-  const dh = cell.append('div').attr('class', 'day-head');
-  dh.append('div').attr('class', 'day-label').text(day.label);
-  dh.append('div').attr('class', 'day-date').text(day.date);
-});
+    const breakfast  = slots.find(s => /breakfast/i.test(s.title || '') && s.type === 'event');
+    const lunch      = slots.find(s => /lunch/i.test(s.title || '') && s.type === 'event');
+    const lunchStart = lunch?.startSlot ?? 54;
+    const lunchEnd   = lunchStart + (lunch?.durationSlots ?? 18);
 
-// Row 2: morning
-DAYS.forEach(day => {
-  const cell = grid.append('div').attr('class', 'cell');
-  cell.append('div').attr('class', 'sec-label').text('Morning · Main Stage');
-  buildRows(cell, day.morning);
-});
+    const llaSlots = slots.filter(s => s.venueId === 'll-a' && CONTENT.has(s.type));
+    const llbSlots = slots.filter(s => s.venueId === 'll-b' && CONTENT.has(s.type));
+    const bStarts  = [...new Set([...llaSlots, ...llbSlots].map(s => s.startSlot))].sort((a, b) => a - b);
+    const firstBStart = bStarts[0] ?? lunchStart + 12;
+    const lastBSlot = [...llaSlots, ...llbSlots].reduce((best, s) => s.startSlot > (best?.startSlot ?? -1) ? s : best, null);
 
-// Row 3: breakouts (separated from lunch — no concurrent messaging)
-DAYS.forEach(day => {
-  const cell = grid.append('div').attr('class', 'cell');
-  const bb = cell.append('div').attr('class', 'breakout-block');
-  bb.append('div').attr('class', 'breakout-hdr').text('Breakout Sessions');
-  const rh = bb.append('div').attr('class', 'room-headers');
-  rh.append('div').attr('class', 'room-lbl').text('Breakout A');
-  rh.append('div').attr('class', 'room-lbl').text('Breakout B');
-  day.breakouts.forEach(slot => {
-    const row = bb.append('div').attr('class', 'bslot');
-    buildBCard(row, slot.lla);
-    buildBCard(row, slot.llb);
+    const speakerSalon = slots.find(s => /speaker salon/i.test(s.title || '') && s.venueId === 'main-stage');
+    const breakfastBand = breakfast
+      ? { label: 'Breakfast + Expo', startSlot: breakfast.startSlot, endSlot: breakfast.startSlot + breakfast.durationSlots }
+      : speakerSalon
+      ? { label: 'Breakfast + Speaker Salon', startSlot: speakerSalon.startSlot, endSlot: speakerSalon.startSlot + speakerSalon.durationSlots }
+      : null;
+
+    const morning = slots.filter(s =>
+      s.venueId === 'main-stage' && s.startSlot < lunchStart &&
+      (CONTENT.has(s.type) || (s.type === 'event' && s.company && !UTIL.test(s.title || ''))) &&
+      !/speaker salon/i.test(s.title || '')
+    );
+
+    const afternoon = slots.filter(s =>
+      s.venueId === 'main-stage' && s.startSlot >= lunchEnd && s.type !== 'break' &&
+      (CONTENT.has(s.type) || (s.type === 'event' && !UTIL.test(s.title || '') && s.startSlot < 150))
+    );
+
+    return {
+      ...meta,
+      id: day.id,
+      breakfastBand,
+      lunchRange:    `${slotToTime(lunchStart)} – ${slotToTime(firstBStart)}`,
+      breakoutRange: bStarts.length && lastBSlot
+        ? `${slotToTime(bStarts[0])} – ${slotToTime(lastBSlot.startSlot + lastBSlot.durationSlots)}`
+        : '',
+      morning:   morning.map(sessionFrom),
+      breakouts: bStarts.map(ss => ({
+        lla: llaSlots.find(s => s.startSlot === ss) ? sessionFrom(llaSlots.find(s => s.startSlot === ss)) : null,
+        llb: llbSlots.find(s => s.startSlot === ss) ? sessionFrom(llbSlots.find(s => s.startSlot === ss)) : null,
+      })),
+      afternoon: afternoon.map(sessionFrom),
+      evening:   EVENING[day.id] || [],
+    };
   });
-});
+}
 
-// Row 4: afternoon
-DAYS.forEach(day => {
-  const cell = grid.append('div').attr('class', 'cell');
-  cell.append('div').attr('class', 'sec-label').text('Afternoon · Main Stage');
-  buildRows(cell, day.afternoon);
-});
+// ── session builder ───────────────────────────────────────
+// No boxes. Left accent stripe + text stack.
 
-// Row 5: evening — flex cells so both columns fill same height
-DAYS.forEach(day => {
-  const cell = grid.append('div').attr('class', 'cell eve-cell');
-  const stack = cell.append('div').attr('class', 'eve-stack');
-  day.evening.forEach(ev => {
-    const blk = stack.append('div').attr('class', 'eve-block');
-    blk.append('div').attr('class', 'eve-label').text(ev.label);
-    blk.append('div').attr('class', 'eve-title').text(ev.title);
-    blk.append('div').attr('class', 'eve-sub').text(ev.sub);
+function buildSession(parent, session) {
+  if (!session) session = { title: null, placeholder: true };
+
+  const isTbd = session.placeholder || !session.title;
+
+  let cls = 'session';
+  if (isTbd)             cls += ' session--tbd';
+  else if (session.canvas) cls += ' session--canvas';
+
+  const el = parent.append('div').attr('class', cls);
+
+  const title   = session.title || 'Title to-be-announced';
+  const compCls = 'session-company' + (session.canvas ? ' session-company--canvas' : '');
+
+  if (session.company) el.append('div').attr('class', compCls).text(session.company);
+  el.append('div').attr('class', 'session-title' + (isTbd ? ' session-title--tbd' : '')).text(title);
+  if (session.host)    el.append('div').attr('class', 'session-host').text('Host: ' + session.host);
+  if (session.speakers) el.append('div').attr('class', 'session-speakers').text(session.speakers);
+  else if (isTbd)       el.append('div').attr('class', 'session-speakers session-speakers--tbd').text('Speaker to-be-announced');
+
+  return el;
+}
+
+// ── renderer ──────────────────────────────────────────────
+
+function renderAgenda(DAYS) {
+  const page = d3.select('#root');
+
+  // Header
+  const hdr = page.append('div').attr('class', 'hdr');
+  const hl  = hdr.append('div');
+  hl.append('div').attr('class', 'hdr-name').text('Basis Northwest');
+  hl.append('div').attr('class', 'hdr-sub').text('Taxable Wealth Innovation Conference');
+  const hm = hdr.append('div').attr('class', 'hdr-meta');
+  hm.append('div').attr('class', 'hdr-version').text(`${VERSION} · ${STAMP}`);
+  hm.append('div').attr('class', 'hdr-dates').text('May 28 to 29, 2026 · Seattle, Washington');
+
+  // Rule
+  page.append('div').attr('class', 'rule');
+
+  // Wednesday pre-conf
+  const wed    = page.append('div').attr('class', 'section');
+  const wedWrap = wed.append('div').attr('class', 'wed-wrap');
+  const wedBlk  = wedWrap.append('div').attr('class', 'eve-block');
+  wedBlk.append('div').attr('class', 'eve-label').text('Pre-Conference · Wednesday, May 27, 2026');
+  wedBlk.append('div').attr('class', 'eve-title').text('Opening Night Gathering');
+  wedBlk.append('div').attr('class', 'eve-sub').text('Hosted by First Trust · Seattle, Washington');
+
+  // Day headings
+  const dayRow = page.append('div').attr('class', 'section section--cols');
+  DAYS.forEach(day => {
+    const col = dayRow.append('div').attr('class', 'col');
+    const dh  = col.append('div').attr('class', 'day-head');
+    dh.append('div').attr('class', 'day-label').text(day.label);
+    dh.append('div').attr('class', 'day-date').text(day.date);
   });
-});
 
-// Footer
-const foot = root.append('div').attr('class', 'footer');
-foot.append('div').attr('class', 'footer-left')
-  .html(`Presented by <strong>Canvas</strong> &nbsp;·&nbsp; Taxable Wealth Strategies &nbsp;·&nbsp; Preliminary ${VERSION} · ${STAMP}`);
-foot.append('div').attr('class', 'footer-right').text('basisconf.com');
+  // First Half
+  const morningRow = page.append('div').attr('class', 'section section--cols');
+  DAYS.forEach(day => {
+    const col = morningRow.append('div').attr('class', 'col');
+    col.append('div').attr('class', 'sec-label').text('First Half · Main Stage');
+    if (day.breakfastBand) {
+      const bf = day.breakfastBand;
+      const s  = col.append('div').attr('class', 'strip');
+      s.append('div').attr('class', 'strip-label').text(bf.label);
+      s.append('div').attr('class', 'strip-time').text(`${slotToTime(bf.startSlot)} – ${slotToTime(bf.endSlot)}`);
+    }
+    const list = col.append('div').attr('class', 'session-list');
+    day.morning.forEach(s => buildSession(list, s));
+  });
 
-// Export button (outside #root so it doesn't appear in capture)
-const bar = d3.select('body').append('div').attr('class', 'export-bar');
-const btn = bar.append('button').attr('class', 'export-btn').text('Export Image');
-btn.on('click', async function() {
-  btn.attr('disabled', true).text('Rendering...');
+  // Lunch
+  const lunchEl = page.append('div').attr('class', 'lunch');
+  lunchEl.append('div').attr('class', 'lunch-label').text('Lunch + Expo');
+  lunchEl.append('div').attr('class', 'lunch-time').text(DAYS[0]?.lunchRange ?? '11:30 AM – 12:30 PM');
+
+  // Breakout
+  const bk = page.append('div').attr('class', 'bk');
+  bk.append('div').attr('class', 'sec-label').text('Breakout Sessions');
+  const bkDays = bk.append('div').attr('class', 'bk-days');
+  DAYS.forEach(day => {
+    const half = bkDays.append('div').attr('class', 'bk-half');
+    const dh   = half.append('div').attr('class', 'bk-day-head');
+    dh.append('div').attr('class', 'bk-day-lbl').text(day.label);
+    dh.append('div').attr('class', 'bk-day-range').text(day.breakoutRange);
+    const rooms = half.append('div').attr('class', 'bk-rooms');
+    const roomA = rooms.append('div').attr('class', 'bk-room');
+    roomA.append('div').attr('class', 'bk-room-lbl').text('Breakout A');
+    const roomB = rooms.append('div').attr('class', 'bk-room');
+    roomB.append('div').attr('class', 'bk-room-lbl').text('Breakout B');
+    day.breakouts.forEach(slot => {
+      buildSession(roomA, slot.lla);
+      buildSession(roomB, slot.llb);
+    });
+  });
+
+  // Second Half
+  const afternoonRow = page.append('div').attr('class', 'section section--cols');
+  DAYS.forEach(day => {
+    const col  = afternoonRow.append('div').attr('class', 'col');
+    col.append('div').attr('class', 'sec-label').text('Second Half · Main Stage');
+    const list = col.append('div').attr('class', 'session-list');
+    day.afternoon.forEach(s => buildSession(list, s));
+  });
+
+  // Evening
+  const eveningRow = page.append('div').attr('class', 'section section--cols section--nobot');
+  DAYS.forEach(day => {
+    const col   = eveningRow.append('div').attr('class', 'col col--eve');
+    const stack = col.append('div').attr('class', 'eve-stack');
+    day.evening.forEach(ev => {
+      const blk = stack.append('div').attr('class', 'eve-block');
+      blk.append('div').attr('class', 'eve-label').text(ev.label);
+      blk.append('div').attr('class', 'eve-title').text(ev.title);
+      blk.append('div').attr('class', 'eve-sub').text(ev.sub);
+    });
+  });
+
+  // Footer
+  const foot = page.append('div').attr('class', 'footer');
+  foot.append('div').attr('class', 'footer-left')
+    .html(`Presented by <strong>Canvas</strong> &nbsp;·&nbsp; Preliminary · Subject to Change &nbsp;·&nbsp; ${STAMP}`);
+  foot.append('div').attr('class', 'footer-right').text('basisconf.com');
+}
+
+// ── export ────────────────────────────────────────────────
+
+const exportBar = d3.select('body').append('div').attr('class', 'export-bar');
+const exportBtn = exportBar.append('button').attr('class', 'export-btn').text('Export Image');
+exportBtn.on('click', async function () {
+  exportBtn.attr('disabled', true).text('Rendering...');
   const canvas = await html2canvas(document.getElementById('root'), {
-    scale: 4,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: '#EAE0CB',
-    logging: false,
+    scale: 4, useCORS: true, allowTaint: true,
+    backgroundColor: '#EAE0CB', logging: false,
   });
   const link = document.createElement('a');
-  link.download = `basis-northwest-2026-agenda-${new Date().toISOString().slice(0,10)}.png`;
+  link.download = `basis-northwest-2026-agenda-${new Date().toISOString().slice(0, 10)}.png`;
   link.href = canvas.toDataURL('image/png');
   link.click();
-  btn.attr('disabled', null).text('Export Image');
+  exportBtn.attr('disabled', null).text('Export Image');
 });
 
-// ── helpers ──────────────────────────────────────────────
+// ── init ──────────────────────────────────────────────────
 
-function buildRows(parent, sessions) {
-  const wrap = parent.append('div').attr('class', 'rows');
-  sessions.forEach(s => {
-    const isPending = s.placeholder || (!s.title && !s.speakers);
-    const row = wrap.append('div').attr('class', isPending ? 'row pending' : 'row');
-    const left = row.append('div').attr('class', 'row-left');
+(async function init() {
+  const res   = await fetch(API_URL);
+  const state = await res.json();
+  renderAgenda(buildDays(state));
+})();
 
-    // title first — primary element
-    if (s.title) {
-      left.append('div').attr('class', 'row-title').text(s.title);
-    } else {
-      left.append('div').attr('class', 'row-title tbd').text('Title To-Be-Announced');
-    }
-
-    // company — secondary label below title
-    if (s.company) {
-      left.append('div')
-        .attr('class', 'row-company' + (s.canvas ? ' canvas-co' : ''))
-        .text(s.company);
-    }
-
-    // speakers — right side
-    if (s.host || s.speakers || s.placeholder) {
-      const right = row.append('div').attr('class', 'row-right');
-      if (s.host) right.append('div').attr('class', 'row-host').text('Host: ' + s.host);
-      if (s.speakers) right.append('div').attr('class', 'row-speakers').text(s.speakers);
-      else if (s.placeholder && !s.host) right.append('div').attr('class', 'row-speakers tbd').text('Speaker To-Be-Announced');
-    }
-  });
-}
-
-function buildBCard(parent, session) {
-  if (!session) {
-    const card = parent.append('div').attr('class', 'bcard tbd-card');
-    card.append('div').attr('class', 'bcard-title tbd').text('Session To-Be-Announced');
-    return;
-  }
-  const isPending = session.placeholder || !session.title;
-  const card = parent.append('div').attr('class', isPending ? 'bcard tbd-card' : 'bcard');
-  if (session.title) {
-    card.append('div').attr('class', 'bcard-title').text(session.title);
-  } else {
-    card.append('div').attr('class', 'bcard-title tbd').text('Title To-Be-Announced');
-  }
-  if (session.company) card.append('div').attr('class', 'bcard-company').text(session.company);
-  if (session.host) card.append('div').attr('class', 'bcard-host').text('Host: ' + session.host);
-  if (session.speakers) {
-    card.append('div').attr('class', 'bcard-speakers').text(session.speakers);
-  } else if (session.placeholder) {
-    card.append('div').attr('class', 'bcard-speakers tbd').text('Speaker To-Be-Announced');
-  }
-}
 </script>
 </body>
 </html>
