@@ -218,6 +218,7 @@ function buildDays(state) {
       speakers,
       host:   mod ? nameOf(mod.contactId) : null,
       canvas: slot.isSponsored && (slot.company || '').includes('Canvas'),
+      pinned: !!slot.pinned,
     };
   }
 
@@ -262,12 +263,12 @@ function buildDays(state) {
       breakoutRange: bStarts.length && lastBSlot
         ? `${slotToTime(bStarts[0])} – ${slotToTime(lastBSlot.startSlot + lastBSlot.durationSlots)}`
         : '',
-      morning:   morning.map(sessionFrom).filter(s => !s.placeholder || s.speakers || s.host),
+      morning:   morning.map(sessionFrom).filter(s => !s.placeholder || s.speakers || s.host || s.pinned),
       breakouts: bStarts.map(ss => ({
         lla: llaSlots.find(s => s.startSlot === ss) ? sessionFrom(llaSlots.find(s => s.startSlot === ss)) : null,
         llb: llbSlots.find(s => s.startSlot === ss) ? sessionFrom(llbSlots.find(s => s.startSlot === ss)) : null,
       })),
-      afternoon: afternoon.map(sessionFrom).filter(s => !s.placeholder || s.speakers || s.host),
+      afternoon: afternoon.map(sessionFrom).filter(s => !s.placeholder || s.speakers || s.host || s.pinned),
       evening:   EVENING[day.id] || [],
     };
   });
