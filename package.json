@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "merge": "node scripts/merge-state.cjs"
+    "merge": "node scripts/merge-state.cjs",
+    "snapshot": "node scripts/snapshot.cjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
