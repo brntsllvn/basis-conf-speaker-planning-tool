@@ -169,7 +169,7 @@
 <script>
 
 const VERSION  = 'v10';
-const STAMP    = 'April 24, 2026';
+const STAMP    = 'April 27, 2026';
 const API_URL  = 'http://localhost:3001/api/state';
 const DAY_ORIGIN = 420;
 
@@ -179,8 +179,8 @@ const DAY_META = {
 };
 
 const EVENING = {
-  thu: [{ label: 'Evening Soiree', title: 'Hosted by First Trust', sub: 'Seattle, Washington' }],
-  fri: [{ label: 'Ballgame', title: 'Mariners vs. Diamondbacks', sub: 'T-Mobile Park · Seattle, Washington' }],
+  thu: [{ label: 'Evening · Thursday, May 28, 2026', title: 'Evening Soiree', sub: 'Hosted by First Trust · Seattle, Washington' }],
+  fri: [{ label: 'Evening · Friday, May 29, 2026', title: 'Mariners vs. Diamondbacks', sub: 'T-Mobile Park · Seattle, Washington' }],
 };
 
 function slotToTime(n) {
@@ -262,12 +262,12 @@ function buildDays(state) {
       breakoutRange: bStarts.length && lastBSlot
         ? `${slotToTime(bStarts[0])} – ${slotToTime(lastBSlot.startSlot + lastBSlot.durationSlots)}`
         : '',
-      morning:   morning.map(sessionFrom),
+      morning:   morning.map(sessionFrom).filter(s => !s.placeholder || s.speakers || s.host),
       breakouts: bStarts.map(ss => ({
         lla: llaSlots.find(s => s.startSlot === ss) ? sessionFrom(llaSlots.find(s => s.startSlot === ss)) : null,
         llb: llbSlots.find(s => s.startSlot === ss) ? sessionFrom(llbSlots.find(s => s.startSlot === ss)) : null,
       })),
-      afternoon: afternoon.map(sessionFrom),
+      afternoon: afternoon.map(sessionFrom).filter(s => !s.placeholder || s.speakers || s.host),
       evening:   EVENING[day.id] || [],
     };
   });
@@ -277,7 +277,7 @@ function buildDays(state) {
 // No boxes. Left accent stripe + text stack.
 
 function buildSession(parent, session) {
-  if (!session) session = { title: null, placeholder: true };
+  if (!session) return null;
 
   const isTbd = session.placeholder || !session.title;
 
@@ -321,7 +321,7 @@ function renderAgenda(DAYS) {
   const wedBlk  = wedWrap.append('div').attr('class', 'eve-block');
   wedBlk.append('div').attr('class', 'eve-label').text('Pre-Conference · Wednesday, May 27, 2026');
   wedBlk.append('div').attr('class', 'eve-title').text('Opening Night Gathering');
-  wedBlk.append('div').attr('class', 'eve-sub').text('Hosted by Canvas (Franklin Templeton) · Seattle, Washington');
+  wedBlk.append('div').attr('class', 'eve-sub').text('Hosted by Canvas (Franklin Templeton) · Aerlume, Seattle');
 
   // Day headings
   const dayRow = page.append('div').attr('class', 'section section--cols');
@@ -341,7 +341,6 @@ function renderAgenda(DAYS) {
       const bf = day.breakfastBand;
       const s  = col.append('div').attr('class', 'strip');
       s.append('div').attr('class', 'strip-label').text(bf.label);
-      s.append('div').attr('class', 'strip-time').text(`${slotToTime(bf.startSlot)} – ${slotToTime(bf.endSlot)}`);
     }
     const list = col.append('div').attr('class', 'session-list');
     day.morning.forEach(s => buildSession(list, s));
@@ -350,7 +349,6 @@ function renderAgenda(DAYS) {
   // Lunch
   const lunchEl = page.append('div').attr('class', 'lunch');
   lunchEl.append('div').attr('class', 'lunch-label').text('Lunch + Expo');
-  lunchEl.append('div').attr('class', 'lunch-time').text(DAYS[0]?.lunchRange ?? '11:30 AM – 12:30 PM');
 
   // Breakout
   const bk = page.append('div').attr('class', 'bk');
@@ -360,7 +358,6 @@ function renderAgenda(DAYS) {
     const half = bkDays.append('div').attr('class', 'bk-half');
     const dh   = half.append('div').attr('class', 'bk-day-head');
     dh.append('div').attr('class', 'bk-day-lbl').text(day.label);
-    dh.append('div').attr('class', 'bk-day-range').text(day.breakoutRange);
     const rooms = half.append('div').attr('class', 'bk-rooms');
     const roomA = rooms.append('div').attr('class', 'bk-room');
     roomA.append('div').attr('class', 'bk-room-lbl').text('Breakout A');
