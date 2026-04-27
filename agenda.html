@@ -26,7 +26,7 @@
       --muted:     #7A6A55;
     }
 
-    @page { size: legal portrait; margin: 0.55in 0.5in; }
+    @page { size: legal portrait; margin: 0; }
 
     html, body {
       width: 8.5in;
@@ -39,7 +39,7 @@
     }
 
     /* ── LAYOUT ───────────────────────────────────────── */
-    #root { display: block; }
+    #root { display: block; padding: 0.5in 0.45in; }
     .section { position: relative; }
     .section::after {
       content: ''; position: absolute; bottom: 0; left: 14px; right: 14px;
