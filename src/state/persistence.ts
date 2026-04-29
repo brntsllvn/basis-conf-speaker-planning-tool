@@ -1,7 +1,9 @@
 import type { AppState } from '../types/schedule';
 import { createInitialState } from '../seed/initialSchedule';
 
-const API_URL = 'http://localhost:3001/api/state';
+const API_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:3001/api/state'
+  : '/api/state';
 const LS_KEY = 'conf-planner-v1';
 
 let useServer = true;
