@@ -2,7 +2,7 @@
 'use strict';
 
 /**
- * Merge a prod-exported JSON into the local SQLite DB.
+ * Merge a prod-exported JSON into the local conf-planner.json.
  * Usage: node scripts/merge-state.cjs <prod-export.json>
  *
  * For each slot/contact:
@@ -11,12 +11,11 @@
  *   - Deleted  : [d]elete      / [k]eep              (default: k)
  */
 
-const fs      = require('fs');
-const path    = require('path');
-const Database = require('better-sqlite3');
+const fs   = require('fs');
+const path = require('path');
 
 // ── paths ──────────────────────────────────────────────────────────────────
-const DB_PATH = path.join(__dirname, '..', 'conf-planner.db');
+const STATE_PATH = path.join(__dirname, '..', 'conf-planner.json');
 
 // ── args ───────────────────────────────────────────────────────────────────
 const [,, inputFile] = process.argv;
@@ -84,26 +83,17 @@ function printDiff(diffs) {
   }
 }
 
-// ── load state ────────────────────────────────────────────────────────────
+// ── load/save state ───────────────────────────────────────────────────────
 function loadDb() {
-  if (!fs.existsSync(DB_PATH)) {
-    console.error(`DB not found: ${DB_PATH}`);
+  if (!fs.existsSync(STATE_PATH)) {
+    console.error(`State file not found: ${STATE_PATH}`);
     process.exit(1);
   }
-  const db = new Database(DB_PATH);
-  const row = db.prepare('SELECT data FROM app_state WHERE id = 1').get();
-  db.close();
-  if (!row) {
-    console.error('No state row in DB (id=1).');
-    process.exit(1);
-  }
-  return JSON.parse(row.data);
+  return JSON.parse(fs.readFileSync(STATE_PATH, 'utf8'));
 }
 
 function saveDb(state) {
-  const db = new Database(DB_PATH);
-  db.prepare('UPDATE app_state SET data = ? WHERE id = 1').run(JSON.stringify(state));
-  db.close();
+  fs.writeFileSync(STATE_PATH, JSON.stringify(state), 'utf8');
 }
 
 // ── main ──────────────────────────────────────────────────────────────────
@@ -248,7 +238,7 @@ async function main() {
   console.log(`  skipped  : ${DIM(skipped)}`);
   console.log(`  deleted  : ${R(deleted)}`);
   console.log(`  kept     : ${DIM(kept)}`);
-  console.log('  DB written.\n');
+  console.log('  conf-planner.json written.\n');
 }
 
 main().catch(err => {

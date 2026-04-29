@@ -1,7 +1,7 @@
-import { kv } from '@vercel/kv';
+import { put, list } from '@vercel/blob';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const KEY = 'conf-state';
+const BLOB_NAME = 'conf-state.json';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,12 +11,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   if (req.method === 'GET') {
-    const data = await kv.get(KEY);
-    return res.json(data ?? null);
+    const { blobs } = await list({ prefix: BLOB_NAME });
+    if (!blobs.length) return res.json(null);
+    const r = await fetch(blobs[0].url);
+    return res.json(await r.json());
   }
 
   if (req.method === 'PUT') {
-    await kv.set(KEY, req.body);
+    await put(BLOB_NAME, JSON.stringify(req.body), {
+      access: 'public',
+      addRandomSuffix: false,
+      allowOverwrite: true,
+    });
     return res.json({ ok: true });
   }
 

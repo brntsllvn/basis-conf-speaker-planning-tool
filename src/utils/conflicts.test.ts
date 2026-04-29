@@ -1,5 +1,6 @@
+/// <reference types="node" />
 import { describe, it, expect } from 'vitest';
-import Database from 'better-sqlite3';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { detectConflicts } from './conflicts';
@@ -7,14 +8,13 @@ import type { AppState } from '../types/schedule';
 import { createInitialState } from '../seed/initialSchedule';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DB_PATH = path.join(__dirname, '../../conf-planner.db');
+const STATE_PATH = path.join(__dirname, '../../conf-planner.json');
 
 function loadState(): AppState {
   try {
-    const db = new Database(DB_PATH, { readonly: true });
-    const row = db.prepare('SELECT data FROM app_state WHERE id = 1').get() as { data: string } | undefined;
-    db.close();
-    if (row) return JSON.parse(row.data) as AppState;
+    if (fs.existsSync(STATE_PATH)) {
+      return JSON.parse(fs.readFileSync(STATE_PATH, 'utf8')) as AppState;
+    }
   } catch {
     // fall through to seed
   }
