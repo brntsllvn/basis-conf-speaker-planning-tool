@@ -66,7 +66,9 @@ export function downloadJson(state: AppState): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `conf-schedule-${new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '')}.json`;
+  const env = window.location.hostname === 'localhost' ? 'DEV' : 'PROD';
+  const ts  = new Date().toISOString().replace(/[-:]/g, '').replace('T', '-').slice(0, 15);
+  a.download = `conf-schedule-${env}-${ts}.json`;
   a.click();
   URL.revokeObjectURL(url);
 }
