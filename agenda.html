@@ -47,8 +47,8 @@
     }
     .section--nobot::after { display: none; }
     .section--cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .col { padding: 7px 0; }
-    .col--eve { display: flex; flex-direction: column; padding-bottom: 10px; }
+    .col { padding: 8px 0; }
+    .col--eve { display: flex; flex-direction: column; }
 
     /* ── HEADER ───────────────────────────────────────── */
     .hdr {
@@ -68,7 +68,7 @@
     .rule { height: 3px; background: linear-gradient(90deg, var(--moss) 0%, var(--fern) 45%, var(--tan) 100%); }
 
     /* ── WEDNESDAY STRIP ─────────────────────────────── */
-    .wed-wrap { padding: 7px 0; }
+    .wed-wrap { padding: 8px 0; }
 
     /* ── DAY HEADING ──────────────────────────────────── */
     .day-head  { padding-bottom: 5px; border-bottom: 2px solid var(--pine); }
@@ -84,7 +84,7 @@
     /* ── THIN STRIPS ──────────────────────────────────── */
     .strip {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 3px 0; margin-bottom: 5px;
+      padding: 4px 0; margin-bottom: 6px;
       border-top: 1px solid var(--tan-rule); border-bottom: 1px solid var(--tan-rule);
       background: rgba(245,237,216,0.5);
     }
@@ -92,7 +92,7 @@
     .lunch {
       background: rgba(245,237,216,0.5);
       display: flex; align-items: center; justify-content: space-between;
-      margin: 0; padding: 5px 0;
+      margin: 0; padding: 8px 0;
       border-top: 1px solid var(--tan-rule); border-bottom: 1px solid var(--tan-rule);
     }
     .lunch-label { font-size: 6.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--moss); }
@@ -120,10 +120,10 @@
     .session-speakers--tbd   { color: var(--muted); font-style: italic; }
 
     /* ── BREAKOUT ─────────────────────────────────────── */
-    .bk { position: relative; }
+    .bk { position: relative; margin-top: 8px; }
     .bk::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: var(--tan-light); }
 .bk-days { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .bk-half { padding: 4px 0 7px; }
+    .bk-half { padding: 8px 0; }
     .bk-day-head {
       display: flex; justify-content: space-between; align-items: baseline;
       padding-bottom: 4px; border-bottom: 1px solid var(--tan-rule); margin-bottom: 5px;
