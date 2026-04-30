@@ -24,7 +24,6 @@ const C = {
   danielBunn:  'c-daniel-bunn',
   josephAqr:   'c-joseph-liberman',
   alex:        'c-alex-fm',
-  nuveen:      'c-nuveen-brooklyn',
   savina:      'c-savina-rizova',
   meb:         'c-meb-faber',
   paulB:       'c-paul-bouchey',
@@ -139,7 +138,7 @@ const SEED_SLOTS: TimeSlot[] = [
     notes: 'Aerlume, 2003 Western Ave, Seattle. Near Pier 66 / waterfront. 5-7 PM. Hosted by Canvas.',
   },
 
-  // ===== THURSDAY — Day 1: Main Stage =====
+  // ===== THURSDAY — Thu 5/28: Main Stage =====
   {
     id: 'thu-main-doors',
     dayId: 'thu',
@@ -495,7 +494,7 @@ const SEED_SLOTS: TimeSlot[] = [
     notes: 'Session title TBD',
   },
 
-  // ===== FRIDAY — Day 2: Main Stage =====
+  // ===== FRIDAY — Fri 5/29: Main Stage =====
   {
     id: 'fri-main-doors',
     dayId: 'fri',
