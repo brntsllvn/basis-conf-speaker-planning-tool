@@ -16,14 +16,14 @@
       --pine:      #1B2E1A;
       --moss:      #2E4823;
       --fern:      #4A6637;
-      --fog:       #9A8E7D;
+      --fog:       #5A4E42;
       --parchment: #EAE0CB;
       --warm:      #F5EDD8;
       --tan:       #C49A5A;
-      --tan-light: #D9C89A;
-      --tan-rule:  #C8B880;
-      --text:      #1A0E08;
-      --muted:     #7A6A55;
+      --tan-light: #B8A870;
+      --tan-rule:  #A08840;
+      --text:      #0D0604;
+      --muted:     #3A2A1A;
     }
 
     @page { size: legal portrait; margin: 0; }
@@ -42,18 +42,18 @@
     #root { display: block; padding: 0.5in 0.45in; }
     .section { position: relative; }
     .section::after {
-      content: ''; position: absolute; bottom: 0; left: 14px; right: 14px;
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
       height: 1px; background: var(--tan-light);
     }
     .section--nobot::after { display: none; }
-    .section--cols { display: grid; grid-template-columns: 1fr 1fr; }
-    .col { padding: 7px 14px; }
+    .section--cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .col { padding: 7px 0; }
     .col--eve { display: flex; flex-direction: column; padding-bottom: 10px; }
 
     /* ── HEADER ───────────────────────────────────────── */
     .hdr {
       background: var(--bark);
-      padding: 10px 24px 9px;
+      padding: 10px 12px 9px;
       display: grid; grid-template-columns: 1fr auto; align-items: center;
     }
     .hdr-name    { font-family: 'Newsreader', serif; font-size: 26px; font-weight: 700; color: var(--warm); line-height: 1; }
@@ -68,7 +68,7 @@
     .rule { height: 3px; background: linear-gradient(90deg, var(--moss) 0%, var(--fern) 45%, var(--tan) 100%); }
 
     /* ── WEDNESDAY STRIP ─────────────────────────────── */
-    .wed-wrap { padding: 7px 14px; }
+    .wed-wrap { padding: 7px 0; }
 
     /* ── DAY HEADING ──────────────────────────────────── */
     .day-head  { padding-bottom: 5px; border-bottom: 2px solid var(--pine); }
@@ -92,7 +92,7 @@
     .lunch {
       background: rgba(245,237,216,0.5);
       display: flex; align-items: center; justify-content: space-between;
-      margin: 0 14px; padding: 5px 0;
+      margin: 0; padding: 5px 0;
       border-top: 1px solid var(--tan-rule); border-bottom: 1px solid var(--tan-rule);
     }
     .lunch-label { font-size: 6.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--moss); }
@@ -121,11 +121,11 @@
 
     /* ── BREAKOUT ─────────────────────────────────────── */
     .bk { position: relative; }
-    .bk::after { content: ''; position: absolute; bottom: 0; left: 14px; right: 14px; height: 1px; background: var(--tan-light); }
-    .bk > .sec-label { padding-left: 14px; padding-right: 14px; padding-top: 7px; margin-bottom: 0; border-bottom: none; position: relative; }
-    .bk > .sec-label::after { content: ''; position: absolute; bottom: 0; left: 14px; right: 14px; height: 1px; background: var(--tan-rule); }
-    .bk-days { display: grid; grid-template-columns: 1fr 1fr; }
-    .bk-half { padding: 4px 14px 7px; }
+    .bk::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: var(--tan-light); }
+    .bk > .sec-label { padding-top: 7px; margin-bottom: 0; border-bottom: none; position: relative; }
+    .bk > .sec-label::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: var(--tan-rule); }
+    .bk-days { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .bk-half { padding: 4px 0 7px; }
     .bk-day-head {
       display: flex; justify-content: space-between; align-items: baseline;
       padding-bottom: 4px; border-bottom: 1px solid var(--tan-rule); margin-bottom: 5px;
@@ -149,7 +149,7 @@
 
     /* ── FOOTER ───────────────────────────────────────── */
     .footer {
-      background: var(--bark); padding: 6px 24px;
+      background: var(--bark); padding: 6px 12px;
       display: flex; align-items: center; justify-content: space-between;
     }
     .footer-left  { font-size: 7.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
@@ -262,12 +262,12 @@ function buildDays(state) {
       breakoutRange: bStarts.length && lastBSlot
         ? `${slotToTime(bStarts[0])} – ${slotToTime(lastBSlot.startSlot + lastBSlot.durationSlots)}`
         : '',
-      morning:   morning.map(sessionFrom).filter(s => !s.placeholder || s.speakers || s.host || s.pinned),
+      morning:   morning.map(sessionFrom),
       breakouts: bStarts.map(ss => ({
         lla: llaSlots.find(s => s.startSlot === ss) ? sessionFrom(llaSlots.find(s => s.startSlot === ss)) : null,
         llb: llbSlots.find(s => s.startSlot === ss) ? sessionFrom(llbSlots.find(s => s.startSlot === ss)) : null,
       })),
-      afternoon: afternoon.map(sessionFrom).filter(s => !s.placeholder || s.speakers || s.host || s.pinned),
+      afternoon: afternoon.map(sessionFrom),
       evening:   EVENING[day.id] || [],
     };
   });
@@ -306,7 +306,7 @@ function renderAgenda(DAYS) {
   // Header
   const hdr = page.append('div').attr('class', 'hdr');
   const hl  = hdr.append('div');
-  hl.append('div').attr('class', 'hdr-name').text('Basis Northwest');
+  hl.append('div').attr('class', 'hdr-name').text('Basis Northwest 2026');
   hl.append('div').attr('class', 'hdr-sub').text('Taxable Wealth Innovation Conference');
   const hm = hdr.append('div').attr('class', 'hdr-meta');
   hm.append('div').attr('class', 'hdr-dates').text('May 28 to 29, 2026 · Seattle, Washington');
@@ -332,16 +332,24 @@ function renderAgenda(DAYS) {
     dh.append('div').attr('class', 'day-date').text(day.date);
   });
 
+  // Breakfast strips
+  const bfRow = page.append('div').attr('class', 'section section--cols');
+  DAYS.forEach(day => {
+    const col = bfRow.append('div').attr('class', 'col');
+    if (day.breakfastBand) {
+      const s = col.append('div').attr('class', 'strip');
+      s.append('div').attr('class', 'strip-label').text(day.breakfastBand.label);
+    }
+  });
+
   // First Half
+  const fhLabel = page.append('div').attr('class', 'lunch');
+  fhLabel.append('div').attr('class', 'lunch-label').text('First Half · Main Stage');
+  fhLabel.append('div').attr('class', 'lunch-time').text('9:00 – 11:30 AM');
+
   const morningRow = page.append('div').attr('class', 'section section--cols');
   DAYS.forEach(day => {
-    const col = morningRow.append('div').attr('class', 'col');
-    col.append('div').attr('class', 'sec-label').text('First Half · Main Stage');
-    if (day.breakfastBand) {
-      const bf = day.breakfastBand;
-      const s  = col.append('div').attr('class', 'strip');
-      s.append('div').attr('class', 'strip-label').text(bf.label);
-    }
+    const col  = morningRow.append('div').attr('class', 'col');
     const list = col.append('div').attr('class', 'session-list');
     day.morning.forEach(s => buildSession(list, s));
   });
@@ -349,15 +357,16 @@ function renderAgenda(DAYS) {
   // Lunch
   const lunchEl = page.append('div').attr('class', 'lunch');
   lunchEl.append('div').attr('class', 'lunch-label').text('Lunch + Expo');
+  lunchEl.append('div').attr('class', 'lunch-time').text('11:30 AM – 12:30 PM');
 
   // Breakout
   const bk = page.append('div').attr('class', 'bk');
-  bk.append('div').attr('class', 'sec-label').text('Breakout Sessions');
+  const bkHdr = bk.append('div').attr('class', 'lunch');
+  bkHdr.append('div').attr('class', 'lunch-label').text('Breakout Sessions');
+  bkHdr.append('div').attr('class', 'lunch-time').text('12:30 – 1:30 PM');
   const bkDays = bk.append('div').attr('class', 'bk-days');
   DAYS.forEach(day => {
-    const half = bkDays.append('div').attr('class', 'bk-half');
-    const dh   = half.append('div').attr('class', 'bk-day-head');
-    dh.append('div').attr('class', 'bk-day-lbl').text(day.label);
+    const half  = bkDays.append('div').attr('class', 'bk-half');
     const rooms = half.append('div').attr('class', 'bk-rooms');
     const roomA = rooms.append('div').attr('class', 'bk-room');
     roomA.append('div').attr('class', 'bk-room-lbl').text('Breakout A');
@@ -370,10 +379,13 @@ function renderAgenda(DAYS) {
   });
 
   // Second Half
+  const shLabel = page.append('div').attr('class', 'lunch');
+  shLabel.append('div').attr('class', 'lunch-label').text('Second Half · Main Stage');
+  shLabel.append('div').attr('class', 'lunch-time').text('1:30 – 5:00 PM');
+
   const afternoonRow = page.append('div').attr('class', 'section section--cols');
   DAYS.forEach(day => {
     const col  = afternoonRow.append('div').attr('class', 'col');
-    col.append('div').attr('class', 'sec-label').text('Second Half · Main Stage');
     const list = col.append('div').attr('class', 'session-list');
     day.afternoon.forEach(s => buildSession(list, s));
   });
@@ -406,7 +418,7 @@ exportBtn.on('click', async function () {
   exportBtn.attr('disabled', true).text('Rendering...');
   const canvas = await html2canvas(document.getElementById('root'), {
     scale: 4, useCORS: true, allowTaint: true,
-    backgroundColor: '#EAE0CB', logging: false,
+    backgroundColor: '#F5F0E8', logging: false,
   });
   const link = document.createElement('a');
   link.download = `basis-northwest-2026-agenda-${new Date().toISOString().slice(0, 10)}.png`;

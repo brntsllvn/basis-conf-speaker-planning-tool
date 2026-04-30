@@ -3,8 +3,8 @@ import { timeToSlot, durationToSlots } from '../utils/time';
 
 const SEED_DAYS: ScheduleDay[] = [
   { id: 'wed', label: 'Wed 5/27 — Load-In', date: '2025-05-27' },
-  { id: 'thu', label: 'Thu 5/28 — Day 1', date: '2025-05-28' },
-  { id: 'fri', label: 'Fri 5/29 — Day 2', date: '2025-05-29' },
+  { id: 'thu', label: 'Thu 5/28', date: '2025-05-28' },
+  { id: 'fri', label: 'Fri 5/29', date: '2025-05-29' },
 ];
 
 const SEED_VENUES: Venue[] = [
@@ -169,18 +169,32 @@ const SEED_SLOTS: TimeSlot[] = [
     notes: '',
   },
   {
-    id: 'thu-main-keynote1',
+    id: 'thu-main-opening-remarks',
     dayId: 'thu',
     venueId: 'main-stage',
     startSlot: timeToSlot(8, 30),
+    durationSlots: durationToSlots(5),
+    type: 'event',
+    company: 'Canvas',
+    title: 'Welcome Remarks',
+    assignments: [{ contactId: C.chris, slotRole: 'Speaker' }],
+    isSponsored: true,
+    isTbd: false,
+    notes: '',
+  },
+  {
+    id: 'thu-main-keynote1',
+    dayId: 'thu',
+    venueId: 'main-stage',
+    startSlot: timeToSlot(8, 35),
     durationSlots: durationToSlots(25),
     type: 'keynote',
     company: 'Canvas',
     title: 'Taxable Wealth: From Core Strategies to Cutting Edge Solutions',
-    assignments: [{ contactId: C.chris, slotRole: 'Speaker' }, { contactId: C.ehren, slotRole: 'Speaker' }],
+    assignments: [{ contactId: C.ehren, slotRole: 'Speaker' }],
     isSponsored: true,
     isTbd: false,
-    notes: 'First 5 min: Chris Loveless Welcome Remarks, then Ehren Stanhope keynote. If (25) = Agenda will reflect 30 min timing.',
+    notes: '',
   },
   {
     id: 'thu-main-arnott',
