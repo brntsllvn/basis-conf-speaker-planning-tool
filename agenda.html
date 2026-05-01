@@ -192,7 +192,7 @@ function slotToTime(n) {
 
 function buildDays(state) {
   const CONTENT = new Set(['keynote', 'solo', 'panel', 'open']);
-  const UTIL = /^(doors|registration|breakfast|lunch|expo|happy hour|thursday|load|mariners|dinner|ft closing|thanks for coming)/i;
+  const UTIL = /^(doors|registration|breakfast|lunch|expo|happy hour|thursday|load|mariners|dinner|thanks for coming)/i;
 
   const cmap = Object.fromEntries(state.contacts.map(c => [c.id, c]));
   function nameOf(id) {
